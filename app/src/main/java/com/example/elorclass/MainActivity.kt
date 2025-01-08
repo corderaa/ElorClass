@@ -3,7 +3,6 @@ package com.example.elorclass
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkInfo
 import android.net.NetworkRequest
 import android.os.Bundle
 import android.widget.Button
@@ -12,6 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.elorclass.functionalities.Functionalities
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,10 +56,12 @@ class MainActivity : AppCompatActivity() {
         val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         connectivityManager.requestNetwork(networkRequest, networkCallback)
 
+        val functionalities = Functionalities()
+
         buttonConnexion.setOnClickListener{
 
 
-            if (connectivityManager.activeNetworkInfo!=null){
+            if (functionalities.checkConnection(connectivityManager)){
                 Toast.makeText(
                     this, "Conectado", Toast.LENGTH_SHORT
                 ).show()
