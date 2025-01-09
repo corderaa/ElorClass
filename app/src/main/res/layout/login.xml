@@ -6,61 +6,60 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Titulo"
-        app:layout_constraintBottom_toTopOf="@+id/editTextText"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/checkBoxRememberMe"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteX="175dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/textViewTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/buttonLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
         tools:layout_editor_absoluteX="162dp" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/buttonRegistro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Registro"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/buttonForgotten"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
         tools:layout_editor_absoluteX="162dp" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/buttonForgotten"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Olvidó contraseña"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRegistro"
         tools:layout_editor_absoluteX="163dp" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/editTextUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -68,20 +67,31 @@
         android:hint="Usuario"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/editTextText2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxRememberMe"
         tools:layout_editor_absoluteX="100dp" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/editTextPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:hint="Password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/button"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLogin"
+        app:layout_constraintTop_toBottomOf="@+id/editTextUser"
         tools:layout_editor_absoluteX="103dp" />
+
+    <CheckBox
+        android:id="@+id/checkBoxRememberMe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recuérdame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/editTextUser"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+        tools:layout_editor_absoluteY="325dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

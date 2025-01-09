@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
         val functionalities = Functionalities()
 
         buttonConnexion.setOnClickListener{
-
-
             if (functionalities.checkConnection(connectivityManager)){
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
@@ -47,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(
                 this, "No conectado", Toast.LENGTH_SHORT
             ).show()
+            }
         }
-    }
     }
 }
