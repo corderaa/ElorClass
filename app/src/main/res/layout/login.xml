@@ -32,12 +32,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRegistro"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
         tools:layout_editor_absoluteX="162dp" />
 
     <Button
-        android:id="@+id/buttonRegistro"
+        android:id="@+id/buttonRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +55,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRegistro"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRegister"
         tools:layout_editor_absoluteX="163dp" />
 
     <AutoCompleteTextView
@@ -93,5 +93,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/autoCompleteTextViewUser"
         app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
-        tools:layout_editor_absoluteY="325dp" />
+        tools:layout_editor_absoluteY="325dp"
+        android:visibility="invisible"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

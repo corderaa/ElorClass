@@ -1,5 +1,6 @@
 package com.example.elorclass
 
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -30,6 +31,7 @@ class LoginActivity: AppCompatActivity() {
 
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
         val buttonConnexion: Button = findViewById(R.id.buttonLogin)
+        val buttonRegister: Button = findViewById(R.id.buttonRegister)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         val cbRememberMe: CheckBox = findViewById(R.id.checkBoxRememberMe)
@@ -78,6 +80,13 @@ class LoginActivity: AppCompatActivity() {
                 etPassword.text.clear()
             } else {
                 Toast.makeText(this, "No conectado", Toast.LENGTH_SHORT).show()
+            }
+        }
+        buttonRegister.setOnClickListener {
+            if (functionalities.checkConnection(connectivityManager)){
+                val intent = Intent(this, RegisterActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         }
     }
