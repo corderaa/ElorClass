@@ -32,6 +32,7 @@ class LoginActivity: AppCompatActivity() {
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
         val buttonConnexion: Button = findViewById(R.id.buttonLogin)
         val buttonRegister: Button = findViewById(R.id.buttonRegister)
+        val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         val cbRememberMe: CheckBox = findViewById(R.id.checkBoxRememberMe)
@@ -82,6 +83,13 @@ class LoginActivity: AppCompatActivity() {
                 Toast.makeText(this, "No conectado", Toast.LENGTH_SHORT).show()
             }
         }
+
+        buttonForgotten.setOnClickListener{
+            if (functionalities.checkConnection(connectivityManager)){
+
+            }
+        }
+
         buttonRegister.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
                 val intent = Intent(this, RegisterActivity::class.java)

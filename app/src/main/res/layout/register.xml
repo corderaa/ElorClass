@@ -125,6 +125,26 @@
                 android:inputType="text"
                 tools:layout_editor_absoluteX="16dp" />
 
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <EditText
+                android:id="@+id/editTextConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:hint="Confirmar contraseña"
+                android:inputType="textPassword"
+                tools:layout_editor_absoluteX="16dp" />
+
         </LinearLayout>
     </ScrollView>
 
