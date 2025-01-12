@@ -26,12 +26,12 @@ class RegisterActivity : AppCompatActivity() {
         val spinner = findViewById<Spinner>(R.id.spinner)
         val cbDual = findViewById<CheckBox>(R.id.checkDual)
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
-        val buttonVolver = findViewById<Button>(R.id.buttonGoBack)
+        val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
         val years = ArrayList<String>()
         years.add("Primero")
         years.add("Segundo")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
-        var selectedOption: String =""
+        var selectedOption =""
         val etLogin = findViewById<EditText>(R.id.editTextLogin)
         val etName = findViewById<EditText>(R.id.editTextName)
         val etSurname = findViewById<EditText>(R.id.editTextSurname)
@@ -77,7 +77,7 @@ class RegisterActivity : AppCompatActivity() {
                     && adress.isNotEmpty() && firstTelephone.isNotEmpty() && secondTelephone.isNotEmpty()
                     && studies.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
                     if (password == confirmPassword) {
-                        var dual = cbDual.isChecked
+                        val dual = cbDual.isChecked
                         val user = User(
                             login = login,
                             name = name,
@@ -103,6 +103,9 @@ class RegisterActivity : AppCompatActivity() {
                         etStudies.text.clear()
                         etPassword.text.clear()
                         etConfirmPassword.text.clear()
+                        Toast.makeText(
+                            this, "Usuario registrado", Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         Toast.makeText(
                             this, "La contraseña no coincide", Toast.LENGTH_SHORT
@@ -120,7 +123,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        buttonVolver.setOnClickListener {
+        buttonGoBack.setOnClickListener {
             if(functionalities.checkConnection(connectivityManager)){
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)

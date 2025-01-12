@@ -79,6 +79,9 @@ class LoginActivity: AppCompatActivity() {
                 }
                 actvUser.text.clear()
                 etPassword.text.clear()
+                val intent = Intent(this, MainPanelActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "No conectado", Toast.LENGTH_SHORT).show()
             }
