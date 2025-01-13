@@ -1,7 +1,6 @@
 package com.example.elorclass.data
 
 data class User(
-    val login: String,
     val name: String,
     val surname: String,
     val id: String,
@@ -10,6 +9,7 @@ data class User(
     val secondTelephone: String,
     val studies: String,
     val password: String,
-    val year: String,
-    val dual: Boolean
+    val schoolyear: Int,
+    val dual: Boolean,
+    val registered: Boolean
 )

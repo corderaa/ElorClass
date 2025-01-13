@@ -1,5 +1,6 @@
 package com.example.elorclass
 
+
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -10,8 +11,11 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
+import com.example.elorclass.data.User
+import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
@@ -30,7 +34,7 @@ class LoginActivity: AppCompatActivity() {
         ).allowMainThreadQueries().build()
 
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
-        val buttonConnexion: Button = findViewById(R.id.buttonLogin)
+        val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonRegister: Button = findViewById(R.id.buttonRegister)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
@@ -60,28 +64,62 @@ class LoginActivity: AppCompatActivity() {
         }
 
         //FALTA AÑADIR LA AUTENTICACIÓN CONTRA LA BASE DE DATOS
-        buttonConnexion.setOnClickListener {
+        buttonLogin.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
-                if (cbRememberMe.isChecked) {
-                    val userName: String = actvUser.text.toString()
+                val userId: String = actvUser.text.toString()
+                //PEDIR USUARIO
+                val usuarioDePrueba = User(
+                    name = "nahikari",
+                    surname = "surname",
+                    id = "id",
+                    adress = "adress",
+                    firstTelephone = "firstTelephone",
+                    secondTelephone = "secondTelephone",
+                    studies = "studies",
+                    schoolyear = 2,
+                    dual = true,
+                    password = "password",
+                    registered = true)
+                UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
+                    usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
+                    usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
+                    usuarioDePrueba.dual, usuarioDePrueba.registered)
+                if(userId == usuarioDePrueba.id) {
                     val password: String = etPassword.text.toString()
-                    val user = RememberMeDB(
-                        userLogin = userName,
-                        password = password
-                    )
-                    val userToDelete = users.find { it.userLogin == userName }
-                    if (userToDelete != null) {
-                        db.rememberMeDao().delete(userToDelete)
+                    if (password == usuarioDePrueba.password) {
+                        if (cbRememberMe.isChecked) {
+                            val user = RememberMeDB(
+                                userLogin = userId,
+                                password = password
+                            )
+                            val userToDelete = users.find { it.userLogin == userId }
+                            if (userToDelete != null) {
+                                db.rememberMeDao().delete(userToDelete)
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "Usuario recordado",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
+                            }
+                            db.rememberMeDao().insertAll(user)
+                        }
+                        if (usuarioDePrueba.registered) {
+                            val intent = Intent(this, MainPanelActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            createDialog("Registro", "Debe registrarse", false)
+                        }
                     } else {
-                        Toast.makeText(this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show()
+                        createDialog("Error", "Contraseña incorrecta", true)
                     }
-                    db.rememberMeDao().insertAll(user)
+                } else {
+                    createDialog("Error", "El usuario no existe", true)
                 }
                 actvUser.text.clear()
                 etPassword.text.clear()
-                val intent = Intent(this, MainPanelActivity::class.java)
-                startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, "No conectado", Toast.LENGTH_SHORT).show()
             }
@@ -100,5 +138,21 @@ class LoginActivity: AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun createDialog(title: String, message: String, registered: Boolean) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, which ->
+                if (!registered) {
+                    val intent = Intent(this, RegisterActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                dialog.dismiss()
+            }
+            .create()
+        alertDialog.show()
     }
 }

@@ -46,16 +46,6 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editTextLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:fontFamily="sans-serif-condensed-medium"
-                android:hint="Login"
-                android:inputType="text"
-                tools:layout_editor_absoluteX="16dp" />
-
-            <EditText
                 android:id="@+id/editTextName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
