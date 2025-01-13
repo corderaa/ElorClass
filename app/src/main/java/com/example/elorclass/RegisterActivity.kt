@@ -29,8 +29,8 @@ class RegisterActivity : AppCompatActivity() {
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
         val years = ArrayList<String>()
-        years.add("Primero")
-        years.add("Segundo")
+        years.add(getString(R.string.first))
+        years.add(getString(R.string.second))
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
         var selectedOption: String
         var selectedOptionInteger : Int = 0
@@ -48,7 +48,7 @@ class RegisterActivity : AppCompatActivity() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parentView: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 selectedOption = parentView?.getItemAtPosition(position).toString()
-                if (selectedOption == "Segundo") {
+                if (selectedOption == getString(R.string.second)) {
                     selectedOptionInteger = 2
                     cbDual.visibility = View.VISIBLE
                 }else {
@@ -64,7 +64,10 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
-        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etPassword, spinner, cbDual)
+        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, spinner, cbDual)
+
+        spinner.isEnabled = false
+        cbDual.isEnabled = false
 
         buttonRegister.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
@@ -81,53 +84,61 @@ class RegisterActivity : AppCompatActivity() {
                     && adress.isNotEmpty() && firstTelephone.isNotEmpty() && secondTelephone.isNotEmpty()
                     && studies.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
                     if (password == confirmPassword) {
-                        val dual = cbDual.isChecked
-                        val user = User(
-                            name = name,
-                            surname = surname,
-                            id = id,
-                            adress = adress,
-                            firstTelephone = firstTelephone,
-                            secondTelephone = secondTelephone,
-                            studies = studies,
-                            schoolyear = selectedOptionInteger,
-                            dual = dual,
-                            password = password,
-                            registered = true
-                        )
-                        //ENVIAR "user" A LA BASE DE DATOS
-                        UserSession.setUserSession(user.name, user.surname, user.id,
-                            user.adress, user.firstTelephone, user.secondTelephone,
-                            user.studies, user.password, user.schoolyear,
-                            user.dual, user.registered)
-                        etName.text.clear()
-                        etSurname.text.clear()
-                        etId.text.clear()
-                        etAdress.text.clear()
-                        etFirstTelephone.text.clear()
-                        etSecondTelephone.text.clear()
-                        etStudies.text.clear()
-                        etPassword.text.clear()
-                        etConfirmPassword.text.clear()
-                        val intent = Intent(this, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                        Toast.makeText(
-                            this, "Usuario registrado", Toast.LENGTH_SHORT
-                        ).show()
+                        if(password == UserSession.fetchPassword()){
+                            Toast.makeText(
+                                this, getString(R.string.change_your_password), Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            val dual = cbDual.isChecked
+                            val user = User(
+                                name = name,
+                                surname = surname,
+                                id = id,
+                                adress = adress,
+                                firstTelephone = firstTelephone,
+                                secondTelephone = secondTelephone,
+                                studies = studies,
+                                schoolyear = selectedOptionInteger,
+                                dual = dual,
+                                password = password,
+                                registered = true
+                            )
+                            //ENVIAR "user" A LA BASE DE DATOS
+                            UserSession.setUserSession(
+                                user.name, user.surname, user.id,
+                                user.adress, user.firstTelephone, user.secondTelephone,
+                                user.studies, user.password, user.schoolyear,
+                                user.dual, user.registered
+                            )
+                            etName.text.clear()
+                            etSurname.text.clear()
+                            etId.text.clear()
+                            etAdress.text.clear()
+                            etFirstTelephone.text.clear()
+                            etSecondTelephone.text.clear()
+                            etStudies.text.clear()
+                            etPassword.text.clear()
+                            etConfirmPassword.text.clear()
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                            Toast.makeText(
+                                this, getString(R.string.user_registered), Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
-                            this, "La contraseña no coincide", Toast.LENGTH_SHORT
+                            this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
                     Toast.makeText(
-                        this, "Debe rellenar todos los campos", Toast.LENGTH_SHORT
+                        this, getString(R.string.complete_fields), Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -139,7 +150,7 @@ class RegisterActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -153,7 +164,6 @@ class RegisterActivity : AppCompatActivity() {
         etFirstTelephone: EditText?,
         etSecondTelephone: EditText?,
         etStudies: EditText?,
-        etPassword: EditText?,
         spinner: Spinner?,
         cbDual: CheckBox?,
     ) {
@@ -164,7 +174,6 @@ class RegisterActivity : AppCompatActivity() {
         etFirstTelephone?.setText(UserSession.fetchFirstTelephone()!!)
         etSecondTelephone?.setText(UserSession.fetchSecondTelephone()!!)
         etStudies?.setText(UserSession.fetchStudies()!!)
-        etPassword?.setText(UserSession.fetchPassword())
         val year = UserSession.fetchSchoolyear()
         if (year != null) {
             spinner?.setSelection(year-1)

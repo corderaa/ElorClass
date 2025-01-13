@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
 
 class ProfileActivity : AppCompatActivity() {
@@ -32,23 +33,29 @@ class ProfileActivity : AppCompatActivity() {
                 val newPassword = etNewPassword.text.toString()
                 val confirmPassword = etConfirmPassword.text.toString()
                 if(oldPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()){
-                    if (newPassword == confirmPassword) {
-                        Toast.makeText(
-                            this, "Contraseña actualizada", Toast.LENGTH_SHORT
-                        ).show()
+                    if(oldPassword == UserSession.fetchPassword()) {
+                        if (newPassword == confirmPassword) {
+                            Toast.makeText(
+                                this, getString(R.string.password_updated), Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     } else {
                         Toast.makeText(
-                            this, "La contraseña no coincide", Toast.LENGTH_SHORT
+                            this, getString(R.string.wrong_password), Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
                     Toast.makeText(
-                        this, "Rellena todos los campos", Toast.LENGTH_SHORT
+                        this, getString(R.string.complete_fields), Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -56,11 +63,11 @@ class ProfileActivity : AppCompatActivity() {
         buttonChangeLanguage.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
                 Toast.makeText(
-                    this, "Idioma", Toast.LENGTH_SHORT
+                    this, getString(R.string.language), Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -68,11 +75,11 @@ class ProfileActivity : AppCompatActivity() {
         buttonChangeTheme.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
                 Toast.makeText(
-                    this, "Tema", Toast.LENGTH_SHORT
+                    this, getString(R.string.theme), Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -84,7 +91,7 @@ class ProfileActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }

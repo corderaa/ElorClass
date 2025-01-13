@@ -26,7 +26,7 @@ class MainPanelActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -38,7 +38,7 @@ class MainPanelActivity : AppCompatActivity() {
                 finish()
             } else {
                 Toast.makeText(
-                    this, "No conectado", Toast.LENGTH_SHORT
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
         }

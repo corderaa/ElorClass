@@ -79,12 +79,12 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = true)
+                    registered = false)
                 UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
                     usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
                     usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
                     usuarioDePrueba.dual, usuarioDePrueba.registered)
-                if(userId == usuarioDePrueba.id) {
+                if(userId.equals(usuarioDePrueba.id,true)) {
                     val password: String = etPassword.text.toString()
                     if (password == usuarioDePrueba.password) {
                         if (cbRememberMe.isChecked) {
@@ -98,7 +98,7 @@ class LoginActivity: AppCompatActivity() {
                             } else {
                                 Toast.makeText(
                                     this,
-                                    "Usuario recordado",
+                                    getString(R.string.remembered_user),
                                     Toast.LENGTH_SHORT
                                 )
                                     .show()
@@ -110,18 +110,18 @@ class LoginActivity: AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         } else {
-                            createDialog("Registro", "Debe registrarse", false)
+                            createDialog(getString(R.string.register), getString(R.string.register_needed), false)
                         }
                     } else {
-                        createDialog("Error", "Contraseña incorrecta", true)
+                        createDialog(getString(R.string.error), getString(R.string.wrong_password), true)
                     }
                 } else {
-                    createDialog("Error", "El usuario no existe", true)
+                    createDialog(getString(R.string.error), getString(R.string.non_existing_user), true)
                 }
                 actvUser.text.clear()
                 etPassword.text.clear()
             } else {
-                Toast.makeText(this, "No conectado", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_conected), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -144,7 +144,7 @@ class LoginActivity: AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
-            .setPositiveButton("OK") { dialog, which ->
+            .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                 if (!registered) {
                     val intent = Intent(this, RegisterActivity::class.java)
                     startActivity(intent)
