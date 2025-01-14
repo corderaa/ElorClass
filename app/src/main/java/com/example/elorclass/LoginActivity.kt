@@ -79,7 +79,7 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = false)
+                    registered = true)
                 UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
                     usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
                     usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
@@ -90,7 +90,7 @@ class LoginActivity: AppCompatActivity() {
                         if (cbRememberMe.isChecked) {
                             val user = RememberMeDB(
                                 userLogin = userId,
-                                password = password
+                                password = password,
                             )
                             val userToDelete = users.find { it.userLogin == userId }
                             if (userToDelete != null) {

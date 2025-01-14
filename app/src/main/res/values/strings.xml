@@ -40,4 +40,12 @@
     <string name="change_your_password">debe cambiar la contraseña</string>
     <string name="first">Primero</string>
     <string name="second">Segundo</string>
+    <string name="spanish">Español</string>
+    <string name="portugues">Portugués</string>
+    <string name="english">Inglés</string>
+    <string name="basque">Euskera</string>
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="accept">Aceptar</string>
+    <string name="cancel">Cancel</string>
 </resources>

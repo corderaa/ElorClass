@@ -3,13 +3,18 @@ package com.example.elorclass
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
+import java.util.Locale
 
 class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +22,8 @@ class ProfileActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.profile)
 
+        var language=""
+        var theme=""
         val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
         val buttonChangePassword: Button = findViewById(R.id.buttonChangePassword)
@@ -65,6 +72,10 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(
                     this, getString(R.string.language), Toast.LENGTH_SHORT
                 ).show()
+                val languages = listOf(getString(R.string.spanish), getString(R.string.english), getString(R.string.basque), getString(R.string.portugues))
+                createDialog(languages, getString(R.string.language)){selectedOption -> language = selectedOption
+                    setLocale(language)
+                }
             } else {
                 Toast.makeText(
                     this, getString(R.string.no_conected), Toast.LENGTH_SHORT
@@ -77,6 +88,8 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(
                     this, getString(R.string.theme), Toast.LENGTH_SHORT
                 ).show()
+                val themes = listOf("Claro", "Oscuro")
+                createDialog(themes, "Tema"){ selectedOption -> theme = selectedOption}
             } else {
                 Toast.makeText(
                     this, getString(R.string.no_conected), Toast.LENGTH_SHORT
@@ -95,5 +108,40 @@ class ProfileActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun createDialog(list: List<String>, title: String, onOptionSelected: (String) -> Unit) {
+        val spinner = Spinner(this)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, list)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle(title)
+            .setView(spinner)
+            .setPositiveButton("Aceptar") { _, _ ->
+                val selectedOption = spinner.selectedItem.toString()
+                onOptionSelected(selectedOption)
+            }
+            .setNegativeButton("Cancelar", null)
+            .create()
+        alertDialog.show()
+    }
+
+    private fun setLocale(language: String) {
+        var languageCode=""
+        when (language){
+            "Inglés" -> languageCode = "en"
+            "Español" -> languageCode = "es"
+            "Portugués" -> languageCode = "pt"
+            "Euskera" -> languageCode = "eu"
+        }
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+        recreate()
     }
 }
