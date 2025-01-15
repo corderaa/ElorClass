@@ -37,7 +37,6 @@ class LoginActivity: AppCompatActivity() {
 
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
-        val buttonRegister: Button = findViewById(R.id.buttonRegister)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
         val etPassword: EditText = findViewById(R.id.editTextPassword)
@@ -81,7 +80,7 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = true)
+                    registered = false)
                 UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
                     usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
                     usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
@@ -116,7 +115,7 @@ class LoginActivity: AppCompatActivity() {
                             if (userPreference != null) {
                                 val language = userPreference.language
                                 val theme = userPreference.theme
-                                if (language != null)
+                                if (language != null && language != Locale.getDefault().language)
                                     setLocale(language)
                                 if (theme != null)
                                     setAppTheme(theme)
@@ -145,14 +144,6 @@ class LoginActivity: AppCompatActivity() {
 
             }
         }
-
-        buttonRegister.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
-                val intent = Intent(this, RegisterActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-        }
     }
 
     private fun createDialog(title: String, message: String, registered: Boolean) {
@@ -179,12 +170,14 @@ class LoginActivity: AppCompatActivity() {
             getString(R.string.portugues) -> languageCode = "pt"
             getString(R.string.basque) -> languageCode = "eu"
         }
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
+        if(languageCode != Locale.getDefault().language) {
+            val locale = Locale(languageCode)
+            Locale.setDefault(locale)
 
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
+            val config = resources.configuration
+            config.setLocale(locale)
+            resources.updateConfiguration(config, resources.displayMetrics)
+        }
     }
 
     private fun setAppTheme(theme: String) {

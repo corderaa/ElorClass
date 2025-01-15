@@ -32,20 +32,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/login"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
+        app:layout_constraintBottom_toTopOf="@+id/buttonForgotten"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword"
         tools:layout_editor_absoluteX="162dp" />
 
-    <Button
-        android:id="@+id/buttonRegister"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/register"
-        app:layout_constraintBottom_toTopOf="@+id/buttonForgotten"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
-        tools:layout_editor_absoluteX="162dp" />
 
     <Button
         android:id="@+id/buttonForgotten"
@@ -55,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonRegister"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLogin"
         tools:layout_editor_absoluteX="163dp" />
 
     <AutoCompleteTextView
