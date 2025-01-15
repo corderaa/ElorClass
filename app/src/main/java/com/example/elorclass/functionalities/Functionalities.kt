@@ -1,9 +1,11 @@
 package com.example.elorclass.functionalities
 
+import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import java.util.Locale
 
 class Functionalities {
     fun checkConnection(connectivityManager: ConnectivityManager): Boolean {

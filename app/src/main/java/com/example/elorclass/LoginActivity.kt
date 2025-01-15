@@ -13,12 +13,14 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
+import java.util.Locale
 
 class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +32,7 @@ class LoginActivity: AppCompatActivity() {
         val functionalities = Functionalities()
         val db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, "RememberMeDB"
+            AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
 
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
@@ -106,6 +108,19 @@ class LoginActivity: AppCompatActivity() {
                             db.rememberMeDao().insertAll(user)
                         }
                         if (usuarioDePrueba.registered) {
+                            val db = Room.databaseBuilder(
+                                applicationContext,
+                                AppDatabase::class.java, "AppDatabase"
+                            ).allowMainThreadQueries().build()
+                            val userPreference = db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                            if (userPreference != null) {
+                                val language = userPreference.language
+                                val theme = userPreference.theme
+                                if (language != null)
+                                    setLocale(language)
+                                if (theme != null)
+                                    setAppTheme(theme)
+                            }
                             val intent = Intent(this, MainPanelActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -154,5 +169,31 @@ class LoginActivity: AppCompatActivity() {
             }
             .create()
         alertDialog.show()
+    }
+
+    private fun setLocale(language: String) {
+        var languageCode=""
+        when (language){
+            getString(R.string.english) -> languageCode = "en"
+            getString(R.string.spanish) -> languageCode = "es"
+            getString(R.string.portugues) -> languageCode = "pt"
+            getString(R.string.basque) -> languageCode = "eu"
+        }
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
+    private fun setAppTheme(theme: String) {
+
+        val mode = if (theme == getString(R.string.dark)) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 }

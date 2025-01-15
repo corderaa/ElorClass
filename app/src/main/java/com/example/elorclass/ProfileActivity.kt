@@ -12,8 +12,12 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.room.Room
 import com.example.elorclass.data.UserSession
+import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
+import com.example.elorclass.functionalities.PreferencesDB
 import java.util.Locale
 
 class ProfileActivity : AppCompatActivity() {
@@ -33,6 +37,10 @@ class ProfileActivity : AppCompatActivity() {
         val etOldPassword = findViewById<EditText>(R.id.editTextOldPassword)
         val etNewPassword = findViewById<EditText>(R.id.editTextNewPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmNewPassword)
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "AppDatabase"
+        ).allowMainThreadQueries().build()
 
         buttonChangePassword.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
@@ -73,8 +81,21 @@ class ProfileActivity : AppCompatActivity() {
                     this, getString(R.string.language), Toast.LENGTH_SHORT
                 ).show()
                 val languages = listOf(getString(R.string.spanish), getString(R.string.english), getString(R.string.basque), getString(R.string.portugues))
-                createDialog(languages, getString(R.string.language)){selectedOption -> language = selectedOption
+                createDialog(languages, getString(R.string.language)) { selectedOption ->
+                    language = selectedOption
                     setLocale(language)
+                    val preferences =
+                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                    if (preferences != null)
+                        db.preferencesDao().changeLanguage(language, UserSession.fetchId()!!)
+                    else {
+                        val user = PreferencesDB(
+                            userLogin = UserSession.fetchId().toString(),
+                            language = language,
+                            theme = null
+                        )
+                        db.preferencesDao().insertAll(user)
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -88,8 +109,25 @@ class ProfileActivity : AppCompatActivity() {
                 Toast.makeText(
                     this, getString(R.string.theme), Toast.LENGTH_SHORT
                 ).show()
-                val themes = listOf("Claro", "Oscuro")
-                createDialog(themes, "Tema"){ selectedOption -> theme = selectedOption}
+                val themes = listOf(getString(R.string.light), getString(R.string.dark))
+                createDialog(themes, getString(R.string.theme)){ selectedOption -> theme = selectedOption
+                    val preferences =
+                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                    if (preferences != null)
+                        db.preferencesDao().changeTheme(theme, UserSession.fetchId()!!)
+                    else {
+                        val user = PreferencesDB(
+                            userLogin = UserSession.fetchId().toString(),
+                            language = null,
+                            theme = theme
+                        )
+                        db.preferencesDao().insertAll(user)
+                    }
+                    if(selectedOption == getString(R.string.light))
+                        setAppTheme(false)
+                    else
+                        setAppTheme(true)
+                }
             } else {
                 Toast.makeText(
                     this, getString(R.string.no_conected), Toast.LENGTH_SHORT
@@ -119,11 +157,11 @@ class ProfileActivity : AppCompatActivity() {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle(title)
             .setView(spinner)
-            .setPositiveButton("Aceptar") { _, _ ->
+            .setPositiveButton(getString(R.string.accept)) { _, _ ->
                 val selectedOption = spinner.selectedItem.toString()
                 onOptionSelected(selectedOption)
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .create()
         alertDialog.show()
     }
@@ -131,10 +169,10 @@ class ProfileActivity : AppCompatActivity() {
     private fun setLocale(language: String) {
         var languageCode=""
         when (language){
-            "Inglés" -> languageCode = "en"
-            "Español" -> languageCode = "es"
-            "Portugués" -> languageCode = "pt"
-            "Euskera" -> languageCode = "eu"
+            getString(R.string.english) -> languageCode = "en"
+            getString(R.string.spanish) -> languageCode = "es"
+            getString(R.string.portugues) -> languageCode = "pt"
+            getString(R.string.basque) -> languageCode = "eu"
         }
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
@@ -143,5 +181,14 @@ class ProfileActivity : AppCompatActivity() {
         config.setLocale(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
         recreate()
+    }
+
+    private fun setAppTheme(isDarkMode: Boolean) {
+        val mode = if (isDarkMode) {
+            AppCompatDelegate.MODE_NIGHT_YES
+        } else {
+            AppCompatDelegate.MODE_NIGHT_NO
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 }
