@@ -1,7 +1,7 @@
 package com.example.elorclass
 
+import android.content.Intent
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Bundle
@@ -37,18 +37,15 @@ class MainActivity : AppCompatActivity() {
         val functionalities = Functionalities()
 
         buttonConnexion.setOnClickListener{
-
-
             if (functionalities.checkConnection(connectivityManager)){
-                Toast.makeText(
-                    this, "Conectado", Toast.LENGTH_SHORT
-                ).show()
-
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
             } else {
             Toast.makeText(
                 this, "No conectado", Toast.LENGTH_SHORT
             ).show()
+            }
         }
-    }
     }
 }
