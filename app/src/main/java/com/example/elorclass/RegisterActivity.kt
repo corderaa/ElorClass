@@ -1,13 +1,19 @@
 package com.example.elorclass
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
@@ -38,6 +44,16 @@ class RegisterActivity : AppCompatActivity() {
         val etDual = findViewById<EditText>(R.id.editTextDual)
         val etPassword = findViewById<EditText>(R.id.editTextPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
+
+        val startForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val intent = result.data
+                    val imageBitmap = intent?.extras?.get("data") as Bitmap
+                    val imageView = findViewById<ImageView>(R.id.imageView2)
+                    imageView.setImageBitmap(imageBitmap)
+                }
+            }
 
         autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etYear, etDual)
 
@@ -128,11 +144,8 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         buttonCamera.setOnClickListener {
-            takePicture()
+            startForResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
         }
-    }
-
-    private fun takePicture() {
     }
 
     private fun autoCompleteData(
