@@ -80,7 +80,7 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = false)
+                    registered = true)
                 UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
                     usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
                     usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
@@ -107,11 +107,11 @@ class LoginActivity: AppCompatActivity() {
                             db.rememberMeDao().insertAll(user)
                         }
                         if (usuarioDePrueba.registered) {
-                            val db = Room.databaseBuilder(
+                            val dbPreferences = Room.databaseBuilder(
                                 applicationContext,
                                 AppDatabase::class.java, "AppDatabase"
                             ).allowMainThreadQueries().build()
-                            val userPreference = db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                            val userPreference = dbPreferences.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
                             if (userPreference != null) {
                                 val language = userPreference.language
                                 val theme = userPreference.theme
