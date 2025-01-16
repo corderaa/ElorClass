@@ -80,11 +80,12 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = true)
+                    registered = false,
+                    role = 3)
                 UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
                     usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
                     usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
-                    usuarioDePrueba.dual, usuarioDePrueba.registered)
+                    usuarioDePrueba.dual, usuarioDePrueba.registered, usuarioDePrueba.role)
                 if(userId.equals(usuarioDePrueba.id,true)) {
                     val password: String = etPassword.text.toString()
                     if (password == usuarioDePrueba.password) {

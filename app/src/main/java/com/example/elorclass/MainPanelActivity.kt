@@ -39,6 +39,7 @@ class MainPanelActivity : AppCompatActivity() {
 
         buttonLogout.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
+                UserSession.clearSession()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -50,9 +51,15 @@ class MainPanelActivity : AppCompatActivity() {
         }
 
         buttonHorario.setOnClickListener {
-            val intent = Intent(this,ScheduleActivity::class.java)
-            startActivity(intent)
-            finish()
+            if (functionalities.checkConnection(connectivityManager)){
+                val intent = Intent(this,ScheduleActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(
+                    this, getString(R.string.no_conected), Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }

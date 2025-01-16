@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -15,6 +16,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.transition.Visibility
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
@@ -55,8 +57,14 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
+
         autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etYear, etDual)
 
+        if (UserSession.fetchRole() != 2) {
+            etStudies.visibility = View.GONE
+            etYear.visibility = View.GONE
+            etDual.visibility = View.GONE
+        }
         buttonRegister.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
                 val password = etPassword.text.toString()
@@ -70,7 +78,7 @@ class RegisterActivity : AppCompatActivity() {
                 val studies = etStudies.text.toString()
                 if (name.isNotEmpty() && surname.isNotEmpty() && id.isNotEmpty()
                     && adress.isNotEmpty() && firstTelephone.isNotEmpty() && secondTelephone.isNotEmpty()
-                    && studies.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
+                    && password.isNotEmpty() && confirmPassword.isNotEmpty()){
                     if (password == confirmPassword) {
                         if(password == UserSession.fetchPassword()){
                             Toast.makeText(
@@ -89,14 +97,15 @@ class RegisterActivity : AppCompatActivity() {
                                 schoolyear = selectedOptionInteger,
                                 dual = dual,
                                 password = password,
-                                registered = true
+                                registered = true,
+                                role = 2
                             )
                             //ENVIAR "user" A LA BASE DE DATOS
                             UserSession.setUserSession(
                                 user.name, user.surname, user.id,
                                 user.adress, user.firstTelephone, user.secondTelephone,
                                 user.studies, user.password, user.schoolyear,
-                                user.dual, user.registered
+                                user.dual, user.registered, user.role
                             )
                             etName.text.clear()
                             etSurname.text.clear()

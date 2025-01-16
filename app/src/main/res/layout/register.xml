@@ -113,7 +113,9 @@
                 android:ems="10"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:hint="@string/studies"
+                android:textColor="@color/black"
                 android:inputType="text"
+                android:enabled="false"
                 tools:layout_editor_absoluteX="16dp" />
 
             <EditText

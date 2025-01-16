@@ -11,5 +11,6 @@ data class User(
     val password: String,
     val schoolyear: Int,
     val dual: Boolean,
-    val registered: Boolean
+    val registered: Boolean,
+    val role: Int
 )
