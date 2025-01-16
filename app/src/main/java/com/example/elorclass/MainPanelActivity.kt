@@ -23,6 +23,7 @@ class MainPanelActivity : AppCompatActivity() {
         val functionalities = Functionalities()
         val buttonProfile : Button = findViewById(R.id.buttonProfile)
         val buttonLogout : Button = findViewById(R.id.buttonLogout)
+        val buttonHorario : Button = findViewById(R.id.horario)
 
         buttonProfile.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
@@ -46,6 +47,12 @@ class MainPanelActivity : AppCompatActivity() {
                     this, getString(R.string.no_conected), Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+        buttonHorario.setOnClickListener {
+            val intent = Intent(this,ScheduleActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

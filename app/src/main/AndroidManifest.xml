@@ -37,6 +37,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".MainPanelActivity"/>
         <activity android:name=".ProfileActivity"/>
+        <activity android:name= ".ScheduleActivity"/>
     </application>
 
 </manifest>
