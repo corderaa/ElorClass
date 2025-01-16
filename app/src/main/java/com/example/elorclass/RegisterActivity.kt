@@ -1,17 +1,19 @@
 package com.example.elorclass
 
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.provider.MediaStore
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Spinner
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
@@ -24,16 +26,13 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.register)
         val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
-        val spinner = findViewById<Spinner>(R.id.spinner)
-        val cbDual = findViewById<CheckBox>(R.id.checkDual)
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
+        val buttonCamera = findViewById<ImageButton>(R.id.imageButtonCamera)
         val years = ArrayList<String>()
         years.add(getString(R.string.first))
         years.add(getString(R.string.second))
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
-        var selectedOption: String
-        var selectedOptionInteger : Int = 0
+        val selectedOptionInteger = 0
         val etName = findViewById<EditText>(R.id.editTextName)
         val etSurname = findViewById<EditText>(R.id.editTextSurname)
         val etId = findViewById<EditText>(R.id.editTextID)
@@ -41,33 +40,22 @@ class RegisterActivity : AppCompatActivity() {
         val etFirstTelephone = findViewById<EditText>(R.id.editTextFirstTelephone)
         val etSecondTelephone = findViewById<EditText>(R.id.editTextSecondTelephone)
         val etStudies = findViewById<EditText>(R.id.editTextStudies)
+        val etYear = findViewById<EditText>(R.id.editTextYear)
+        val etDual = findViewById<EditText>(R.id.editTextDual)
         val etPassword = findViewById<EditText>(R.id.editTextPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
 
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedOption = parentView?.getItemAtPosition(position).toString()
-                if (selectedOption == getString(R.string.second)) {
-                    selectedOptionInteger = 2
-                    cbDual.visibility = View.VISIBLE
-                }else {
-                    cbDual.visibility = View.INVISIBLE
-                    cbDual.isChecked = false
-                    selectedOptionInteger = 1
+        val startForResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val intent = result.data
+                    val imageBitmap = intent?.extras?.get("data") as Bitmap
+                    val imageView = findViewById<ImageView>(R.id.imageView2)
+                    imageView.setImageBitmap(imageBitmap)
                 }
             }
 
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-                cbDual.visibility = View.INVISIBLE
-                cbDual.isChecked = false
-            }
-        }
-
-        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, spinner, cbDual)
-
-        spinner.isEnabled = false
-        cbDual.isEnabled = false
+        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etYear, etDual)
 
         buttonRegister.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
@@ -89,7 +77,7 @@ class RegisterActivity : AppCompatActivity() {
                                 this, getString(R.string.change_your_password), Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            val dual = cbDual.isChecked
+                            val dual = true
                             val user = User(
                                 name = name,
                                 surname = surname,
@@ -154,6 +142,10 @@ class RegisterActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        buttonCamera.setOnClickListener {
+            startForResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+        }
     }
 
     private fun autoCompleteData(
@@ -164,8 +156,8 @@ class RegisterActivity : AppCompatActivity() {
         etFirstTelephone: EditText?,
         etSecondTelephone: EditText?,
         etStudies: EditText?,
-        spinner: Spinner?,
-        cbDual: CheckBox?,
+        etYear: EditText?,
+        etDual: EditText?,
     ) {
         etName?.setText(UserSession.fetchName()!!)
         etSurname?.setText(UserSession.fetchSurname()!!)
@@ -175,11 +167,13 @@ class RegisterActivity : AppCompatActivity() {
         etSecondTelephone?.setText(UserSession.fetchSecondTelephone()!!)
         etStudies?.setText(UserSession.fetchStudies()!!)
         val year = UserSession.fetchSchoolyear()
-        if (year != null) {
-            spinner?.setSelection(year-1)
-        }
+        if (year == 1)
+            etYear?.setText(getString(R.string.first))
+        else
+            etYear?.setText(getString(R.string.second))
         if (UserSession.fetchDual()==true){
-            cbDual?.isChecked = true
-        }
+            etDual?.setText(getString(R.string.dual_studies))
+        } else
+            etDual?.setText(getString(R.string.no_dual_studies))
     }
 }

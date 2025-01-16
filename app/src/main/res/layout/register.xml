@@ -33,8 +33,9 @@
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="388dp"
-        android:layout_height="180dp"
-        app:layout_constraintBottom_toTopOf="@+id/spinner"
+        android:layout_height="180dp"        
+        app:layout_constraintBottom_toTopOf="@+id/imageButtonCamera"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
@@ -116,6 +117,30 @@
                 tools:layout_editor_absoluteX="16dp" />
 
             <EditText
+                android:id="@+id/editTextYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:hint="@string/school_year"
+                android:textColor="@color/black"
+                android:inputType="text"
+                android:enabled="false"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <EditText
+                android:id="@+id/editTextDual"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:hint="@string/dual_studies"
+                android:textColor="@color/black"
+                android:inputType="text"
+                android:enabled="false"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <EditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -138,6 +163,28 @@
         </LinearLayout>
     </ScrollView>
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="147dp"
+        android:layout_height="130dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
+        app:layout_constraintEnd_toStartOf="@id/imageButtonCamera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageButton
+        android:id="@+id/imageButtonCamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:drawable/ic_menu_camera"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageView2"
+        tools:layout_editor_absoluteX="290dp"
+        tools:layout_editor_absoluteY="192dp" />
+
     <Button
         android:id="@+id/buttonRegister"
         android:layout_width="370dp"
@@ -149,7 +196,7 @@
         app:layout_constraintHeight_percent="0.065"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkDual"
+        app:layout_constraintTop_toBottomOf="@+id/imageButtonCamera"
         app:layout_constraintWidth_percent="0.9" />
 
     <Button
@@ -165,25 +212,5 @@
         app:layout_constraintTop_toBottomOf="@+id/buttonRegister"
         app:layout_constraintWidth_percent="0.9" />
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/checkDual"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
-    <CheckBox
-        android:id="@+id/checkDual"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dual_studies"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRegister"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
