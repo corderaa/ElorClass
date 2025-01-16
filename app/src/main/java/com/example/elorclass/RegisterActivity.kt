@@ -24,8 +24,6 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.register)
         val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
-        val spinner = findViewById<Spinner>(R.id.spinner)
-        val cbDual = findViewById<CheckBox>(R.id.checkDual)
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
         val years = ArrayList<String>()
@@ -41,33 +39,12 @@ class RegisterActivity : AppCompatActivity() {
         val etFirstTelephone = findViewById<EditText>(R.id.editTextFirstTelephone)
         val etSecondTelephone = findViewById<EditText>(R.id.editTextSecondTelephone)
         val etStudies = findViewById<EditText>(R.id.editTextStudies)
+        val etYear = findViewById<EditText>(R.id.editTextYear)
+        val etDual = findViewById<EditText>(R.id.editTextDual)
         val etPassword = findViewById<EditText>(R.id.editTextPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
 
-        spinner.adapter = adapter
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parentView: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                selectedOption = parentView?.getItemAtPosition(position).toString()
-                if (selectedOption == getString(R.string.second)) {
-                    selectedOptionInteger = 2
-                    cbDual.visibility = View.VISIBLE
-                }else {
-                    cbDual.visibility = View.INVISIBLE
-                    cbDual.isChecked = false
-                    selectedOptionInteger = 1
-                }
-            }
-
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-                cbDual.visibility = View.INVISIBLE
-                cbDual.isChecked = false
-            }
-        }
-
-        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, spinner, cbDual)
-
-        spinner.isEnabled = false
-        cbDual.isEnabled = false
+        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etYear, etDual)
 
         buttonRegister.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
@@ -89,7 +66,7 @@ class RegisterActivity : AppCompatActivity() {
                                 this, getString(R.string.change_your_password), Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            val dual = cbDual.isChecked
+                            val dual = true
                             val user = User(
                                 name = name,
                                 surname = surname,
@@ -164,8 +141,8 @@ class RegisterActivity : AppCompatActivity() {
         etFirstTelephone: EditText?,
         etSecondTelephone: EditText?,
         etStudies: EditText?,
-        spinner: Spinner?,
-        cbDual: CheckBox?,
+        etYear: EditText?,
+        etDual: EditText?,
     ) {
         etName?.setText(UserSession.fetchName()!!)
         etSurname?.setText(UserSession.fetchSurname()!!)
@@ -175,11 +152,13 @@ class RegisterActivity : AppCompatActivity() {
         etSecondTelephone?.setText(UserSession.fetchSecondTelephone()!!)
         etStudies?.setText(UserSession.fetchStudies()!!)
         val year = UserSession.fetchSchoolyear()
-        if (year != null) {
-            spinner?.setSelection(year-1)
-        }
+        if (year == 1)
+            etYear?.setText(getString(R.string.first))
+        else
+            etYear?.setText(getString(R.string.second))
         if (UserSession.fetchDual()==true){
-            cbDual?.isChecked = true
-        }
+            etDual?.setText(getString(R.string.dual_studies))
+        } else
+            etDual?.setText(getString(R.string.no_dual_studies))
     }
 }

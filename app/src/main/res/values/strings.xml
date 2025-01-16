@@ -24,6 +24,7 @@
     <string name="second_telephone">Teléfono2</string>
     <string name="studies">Ciclo</string>
     <string name="dual_studies">Dual intensiva</string>
+    <string name="no_dual_studies">No dual intensiva</string>
     <string name="remembered_user">usuario recordado</string>
     <string name="register_needed">debe registrarse</string>
     <string name="error">error</string>
@@ -48,4 +49,5 @@
     <string name="dark">Oscuro</string>
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancel</string>
+    <string name="school_year">Curso</string>
 </resources>
