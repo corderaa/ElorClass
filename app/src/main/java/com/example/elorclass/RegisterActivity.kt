@@ -3,13 +3,9 @@ package com.example.elorclass
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Spinner
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -26,12 +22,11 @@ class RegisterActivity : AppCompatActivity() {
         val functionalities = Functionalities()
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
+        val buttonCamera = findViewById<ImageButton>(R.id.imageButtonCamera)
         val years = ArrayList<String>()
         years.add(getString(R.string.first))
         years.add(getString(R.string.second))
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
-        var selectedOption: String
-        var selectedOptionInteger : Int = 0
+        val selectedOptionInteger = 0
         val etName = findViewById<EditText>(R.id.editTextName)
         val etSurname = findViewById<EditText>(R.id.editTextSurname)
         val etId = findViewById<EditText>(R.id.editTextID)
@@ -131,6 +126,13 @@ class RegisterActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+        buttonCamera.setOnClickListener {
+            takePicture()
+        }
+    }
+
+    private fun takePicture() {
     }
 
     private fun autoCompleteData(
