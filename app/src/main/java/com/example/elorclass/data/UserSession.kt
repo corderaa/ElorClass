@@ -13,11 +13,12 @@ object UserSession {
     private var schoolyear: Int? = null
     private var dual: Boolean? = null
     private var registered: Boolean? = null
+    private var role: Int? = null
 
     fun setUserSession(
         name: String, surname: String, id: String, adress: String,
         firstTelephone: String, secondTelephone: String, studies: String,
-        password: String, schoolyear: Int, dual: Boolean, registered: Boolean
+        password: String, schoolyear: Int, dual: Boolean, registered: Boolean, role:Int
     ) {
         this.name = name
         this.surname = surname
@@ -30,6 +31,7 @@ object UserSession {
         this.schoolyear = schoolyear
         this.dual = dual
         this.registered = registered
+        this.role = role
     }
 
     fun fetchName(): String? = name
@@ -43,6 +45,7 @@ object UserSession {
     fun fetchSchoolyear(): Int? = schoolyear
     fun fetchDual(): Boolean? = dual
     fun fetchRegistered(): Boolean? = registered
+    fun fetchRole(): Int? = role
 
     fun clearSession() {
         name = null
@@ -56,6 +59,7 @@ object UserSession {
         schoolyear = null
         dual = null
         registered = null
+        role = null
     }
 
     fun isUserLoggedIn(): Boolean = id != null && name != null

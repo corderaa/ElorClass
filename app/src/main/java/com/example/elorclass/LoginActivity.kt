@@ -54,7 +54,6 @@ class LoginActivity: AppCompatActivity() {
             val rememberPassword: String = usersPasswords[users.size - 1]
             actvUser.setAdapter(adapterUser)
             actvUser.threshold = 1
-
             actvUser.setText(rememberedUserLogin)
             etPassword.setText(rememberPassword)
             actvUser.setOnItemClickListener{ _, _, _, _ ->
@@ -67,7 +66,7 @@ class LoginActivity: AppCompatActivity() {
         //FALTA AÑADIR LA AUTENTICACIÓN CONTRA LA BASE DE DATOS
         buttonLogin.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
-                val userId: String = actvUser.text.toString()
+                val userId = actvUser.text.toString()
                 //PEDIR USUARIO
                 val usuarioDePrueba = User(
                     name = "nahikari",
@@ -80,13 +79,21 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = true)
-                UserSession.setUserSession(usuarioDePrueba.name, usuarioDePrueba.surname, usuarioDePrueba.id,
-                    usuarioDePrueba.adress, usuarioDePrueba.firstTelephone, usuarioDePrueba.secondTelephone,
-                    usuarioDePrueba.studies, usuarioDePrueba.password, usuarioDePrueba.schoolyear,
-                    usuarioDePrueba.dual, usuarioDePrueba.registered)
+                    registered = false,
+                    role = 3)
+                UserSession.setUserSession(usuarioDePrueba.name!!, usuarioDePrueba.surname!!, usuarioDePrueba.id!!,
+                    usuarioDePrueba.adress!!, usuarioDePrueba.firstTelephone!!, usuarioDePrueba.secondTelephone!!,
+                    usuarioDePrueba.studies!!, usuarioDePrueba.password!!, usuarioDePrueba.schoolyear!!,
+                    usuarioDePrueba.dual!!, usuarioDePrueba.registered!!, usuarioDePrueba.role!!)
                 if(userId.equals(usuarioDePrueba.id,true)) {
                     val password: String = etPassword.text.toString()
+
+                    //UGAITZ
+                    val userPruebaLogin = User(id = actvUser.text.toString(), password = etPassword.text.toString())
+
+
+
+
                     if (password == usuarioDePrueba.password) {
                         if (cbRememberMe.isChecked) {
                             val user = RememberMeDB(
@@ -141,6 +148,7 @@ class LoginActivity: AppCompatActivity() {
 
         buttonForgotten.setOnClickListener{
             if (functionalities.checkConnection(connectivityManager)){
+                val userLogin = actvUser.text.toString()
 
             }
         }
@@ -173,7 +181,6 @@ class LoginActivity: AppCompatActivity() {
         if(languageCode != Locale.getDefault().language) {
             val locale = Locale(languageCode)
             Locale.setDefault(locale)
-
             val config = resources.configuration
             config.setLocale(locale)
             resources.updateConfiguration(config, resources.displayMetrics)
@@ -181,7 +188,6 @@ class LoginActivity: AppCompatActivity() {
     }
 
     private fun setAppTheme(theme: String) {
-
         val mode = if (theme == getString(R.string.dark)) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
