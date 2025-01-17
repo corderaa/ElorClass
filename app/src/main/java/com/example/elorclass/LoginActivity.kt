@@ -20,15 +20,23 @@ import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
+import com.example.elorclass.socketIO.SocketClient
+import com.example.elorclass.socketIO.config.Events
+import com.google.gson.Gson
 import java.util.Locale
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
+
+    private var socketClient: SocketClient? = null
+    val gson = Gson()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.login)
 
-        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
         val db = Room.databaseBuilder(
             applicationContext,
@@ -42,63 +50,60 @@ class LoginActivity: AppCompatActivity() {
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         val cbRememberMe: CheckBox = findViewById(R.id.checkBoxRememberMe)
 
-        if (users.isNotEmpty()){
+        socketClient = SocketClient(this)
+
+        if (users.isNotEmpty()) {
             val usersNames = ArrayList<String>()
             val usersPasswords = ArrayList<String>()
-            for (user in users){
+            for (user in users) {
                 usersNames.add(user.userLogin)
                 usersPasswords.add(user.password)
             }
-            val adapterUser = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, usersNames)
+            val adapterUser =
+                ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, usersNames)
             val rememberedUserLogin: String = usersNames[users.size - 1]
             val rememberPassword: String = usersPasswords[users.size - 1]
             actvUser.setAdapter(adapterUser)
             actvUser.threshold = 1
             actvUser.setText(rememberedUserLogin)
             etPassword.setText(rememberPassword)
-            actvUser.setOnItemClickListener{ _, _, _, _ ->
+            actvUser.setOnItemClickListener { _, _, _, _ ->
                 etPassword.setText(usersPasswords[usersNames.indexOf(actvUser.text.toString())])
             }
 
             cbRememberMe.isChecked = true
         }
 
+        val user = actvUser
+
         //FALTA AÑADIR LA AUTENTICACIÓN CONTRA LA BASE DE DATOS
         buttonLogin.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+
+
+            if (functionalities.checkConnection(connectivityManager)) {
+                socketClient!!.connect()
                 val userId = actvUser.text.toString()
                 //PEDIR USUARIO
-                val usuarioDePrueba = User(
-                    name = "nahikari",
-                    surname = "surname",
-                    id = "id",
-                    adress = "adress",
-                    firstTelephone = "firstTelephone",
-                    secondTelephone = "secondTelephone",
-                    studies = "studies",
-                    schoolyear = 2,
-                    dual = true,
-                    password = "password",
-                    registered = false,
-                    role = 3)
-                UserSession.setUserSession(usuarioDePrueba.name!!, usuarioDePrueba.surname!!, usuarioDePrueba.id!!,
-                    usuarioDePrueba.adress!!, usuarioDePrueba.firstTelephone!!, usuarioDePrueba.secondTelephone!!,
-                    usuarioDePrueba.studies!!, usuarioDePrueba.password!!, usuarioDePrueba.schoolyear!!,
-                    usuarioDePrueba.dual!!, usuarioDePrueba.registered!!, usuarioDePrueba.role!!)
-                if(userId.equals(usuarioDePrueba.id,true)) {
-                    val password: String = etPassword.text.toString()
+                login(actvUser.toString(), etPassword.toString())
 
-                    //UGAITZ
-                    val userPruebaLogin = User(id = actvUser.text.toString(), password = etPassword.text.toString())
-
-
-
-
-                    if (password == usuarioDePrueba.password) {
+               // UserSession.setUserSession(
+                //    usuarioDePrueba.name!!,
+               //     usuarioDePrueba.lastNames!!,
+               //     usuarioDePrueba.dni!!,
+               //     usuarioDePrueba.address!!,
+               //     usuarioDePrueba.phone!!,
+               //     usuarioDePrueba.phone2!!,
+               //     usuarioDePrueba.studies!!,
+               //     usuarioDePrueba.password!!,
+               //     usuarioDePrueba.schoolyear!!,
+               //     usuarioDePrueba.dual!!,
+               //     usuarioDePrueba.registered!!,
+               //     usuarioDePrueba.role!!
+               // )
                         if (cbRememberMe.isChecked) {
                             val user = RememberMeDB(
                                 userLogin = userId,
-                                password = password,
+                               // password = password,
                             )
                             val userToDelete = users.find { it.userLogin == userId }
                             if (userToDelete != null) {
@@ -118,7 +123,8 @@ class LoginActivity: AppCompatActivity() {
                                 applicationContext,
                                 AppDatabase::class.java, "AppDatabase"
                             ).allowMainThreadQueries().build()
-                            val userPreference = dbPreferences.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                            val userPreference = dbPreferences.preferencesDao()
+                                .getPreferenceByLogin(UserSession.fetchId().toString())
                             if (userPreference != null) {
                                 val language = userPreference.language
                                 val theme = userPreference.theme
@@ -131,26 +137,28 @@ class LoginActivity: AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         } else {
-                            createDialog(getString(R.string.register), getString(R.string.register_needed), false)
+                            createDialog(
+                                getString(R.string.register),
+                                getString(R.string.register_needed),
+                                false
+                            )
                         }
                     } else {
-                        createDialog(getString(R.string.error), getString(R.string.wrong_password), true)
+                        createDialog(
+                            getString(R.string.error),
+                            getString(R.string.wrong_password),
+                            true
+                        )
                     }
-                } else {
-                    createDialog(getString(R.string.error), getString(R.string.non_existing_user), true)
-                }
                 actvUser.text.clear()
                 etPassword.text.clear()
-            } else {
-                Toast.makeText(this, getString(R.string.no_conected), Toast.LENGTH_SHORT).show()
-            }
         }
 
-        buttonForgotten.setOnClickListener{
-            if (functionalities.checkConnection(connectivityManager)){
+        buttonForgotten.setOnClickListener {
+            if (functionalities.checkConnection(connectivityManager)) {
                 val userLogin = actvUser.text.toString()
                 val newPassword = functionalities.generateRandomPassword(10)
-                val userForgottenPassword = User(id = userLogin, password = newPassword)
+                val userForgottenPassword = User(dni = userLogin, password = newPassword)
                 //Mandar este usuario al servidor
             }
         }
@@ -172,15 +180,29 @@ class LoginActivity: AppCompatActivity() {
         alertDialog.show()
     }
 
+    fun login(dni: String, password: String) {
+
+        var newUser = User()
+
+        newUser.dni = dni;
+        newUser.password = password;
+
+        var message = this.gson.toJson(newUser);
+
+        //val jsonObject = JSONObject()
+
+        socketClient!!.emit(Events.ON_LOGIN, message)
+    }
+
     private fun setLocale(language: String) {
-        var languageCode=""
-        when (language){
+        var languageCode = ""
+        when (language) {
             getString(R.string.english) -> languageCode = "en"
             getString(R.string.spanish) -> languageCode = "es"
             getString(R.string.portugues) -> languageCode = "pt"
             getString(R.string.basque) -> languageCode = "eu"
         }
-        if(languageCode != Locale.getDefault().language) {
+        if (languageCode != Locale.getDefault().language) {
             val locale = Locale(languageCode)
             Locale.setDefault(locale)
             val config = resources.configuration
