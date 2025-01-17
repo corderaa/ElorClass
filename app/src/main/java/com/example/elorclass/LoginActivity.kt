@@ -149,7 +149,9 @@ class LoginActivity: AppCompatActivity() {
         buttonForgotten.setOnClickListener{
             if (functionalities.checkConnection(connectivityManager)){
                 val userLogin = actvUser.text.toString()
-
+                val newPassword = functionalities.generateRandomPassword(10)
+                val userForgottenPassword = User(id = userLogin, password = newPassword)
+                //Mandar este usuario al servidor
             }
         }
     }
