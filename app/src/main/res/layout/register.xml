@@ -11,6 +11,7 @@
         android:layout_width="339dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@+id/textViewTitle"
+        app:srcCompat="@drawable/elorrieta_erreka_mari_93dac93"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.291"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,10 +21,10 @@
         android:id="@+id/textViewTitle"
         android:layout_width="288dp"
         android:layout_height="65dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="@string/title_register"
         android:textColor="@color/elorrieta1"
         android:textSize="48sp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/title_register"
         app:layout_constraintBottom_toTopOf="@+id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.089"
@@ -173,7 +174,7 @@
         app:layout_constraintEnd_toStartOf="@id/imageButtonCamera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:srcCompat="@drawable/png_transparent_silhouette_person_graphy_silhouette_animals_rectangle_photography" />
 
     <ImageButton
         android:id="@+id/imageButtonCamera"
@@ -184,6 +185,7 @@
         app:layout_constraintTop_toBottomOf="@+id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/imageView2"
+        android:backgroundTint="@color/elorrieta1"
         tools:layout_editor_absoluteX="290dp"
         tools:layout_editor_absoluteY="192dp" />
 
@@ -191,15 +193,15 @@
         android:id="@+id/buttonRegister"
         android:layout_width="370dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.065"
+        app:layout_constraintWidth_percent="0.9"
         android:backgroundTint="@color/elorrieta1"
         android:text="@string/register"
         app:layout_constraintBottom_toTopOf="@+id/buttonLogout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.065"
-        app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageButtonCamera"
-        app:layout_constraintWidth_percent="0.9" />
+        />
 
     <Button
         android:id="@+id/buttonLogout"

@@ -13,6 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/elorrieta_erreka_mari_93dac93"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView

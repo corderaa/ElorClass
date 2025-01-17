@@ -61,6 +61,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //GIF
+    implementation(libs.glide)
+    annotationProcessor(libs.glideCompiler)
+
     // SOCKET.IO
     implementation(libs.socket.io.client)
     implementation(libs.engine.io.client)
