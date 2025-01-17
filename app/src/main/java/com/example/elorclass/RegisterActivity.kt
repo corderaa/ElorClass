@@ -102,10 +102,10 @@ class RegisterActivity : AppCompatActivity() {
                             )
                             //ENVIAR "user" A LA BASE DE DATOS
                             UserSession.setUserSession(
-                                user.name, user.surname, user.id,
-                                user.adress, user.firstTelephone, user.secondTelephone,
-                                user.studies, user.password, user.schoolyear,
-                                user.dual, user.registered, user.role
+                                user.name!!, user.surname!!, user.id!!,
+                                user.adress!!, user.firstTelephone!!, user.secondTelephone!!,
+                                user.studies!!, user.password!!, user.schoolyear!!,
+                                user.dual!!, user.registered!!, user.role!!
                             )
                             etName.text.clear()
                             etSurname.text.clear()
