@@ -1,11 +1,10 @@
 package com.example.elorclass.functionalities
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import java.util.Locale
+import java.security.SecureRandom
 
 class Functionalities {
     fun checkConnection(connectivityManager: ConnectivityManager): Boolean {
@@ -39,5 +38,18 @@ class Functionalities {
         connectivityManager.requestNetwork(networkRequest, networkCallback)
 
         return connectivityManager.activeNetworkInfo != null
+    }
+
+    fun generateRandomPassword(length: Int): String {
+        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+"
+        val secureRandom = SecureRandom()
+        val password = StringBuilder()
+
+        for (i in 0 until length) {
+            val randomIndex = secureRandom.nextInt(characters.length)
+            password.append(characters[randomIndex])
+        }
+
+        return password.toString()
     }
 }
