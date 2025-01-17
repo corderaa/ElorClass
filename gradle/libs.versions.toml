@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -30,6 +31,10 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+socket-io-client = { module = "io.socket:socket.io-client", version = "2.1.1" }
+engine-io-client = { module = "io.socket:engine.io-client", version = "2.1.0" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
