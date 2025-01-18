@@ -16,11 +16,11 @@ data class User(
     val emailVerifiedAt: Timestamp?= null,
     val studies: String?= null,
     var password: String?= null,
-    val rememberToken: String?= null,
-    val schoolyear: Int?= null,
-    val dual: Boolean?= null,
+    //val rememberToken: String?= null,
+    //val schoolyear: Int?= null,
+   // val dual: Boolean?= null,
     val registered: Boolean?= null,
-    val role: Int?= null,
+    //val role: Int?= null,
     val createdAt: Timestamp?= null,
     val updatedAt: Timestamp?= null
 )

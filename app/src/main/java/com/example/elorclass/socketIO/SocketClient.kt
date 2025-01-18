@@ -2,6 +2,7 @@ package com.example.elorclass.socketIO
 
 import android.app.Activity
 import android.util.Log
+import com.example.elorclass.LoginActivity
 import com.example.elorclass.data.User
 import com.example.elorclass.socketIO.config.Events
 import com.google.gson.Gson
@@ -10,7 +11,7 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
 
-class SocketClient(private val activity: Activity) {
+class SocketClient(private val activity: LoginActivity) {
 
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
@@ -35,9 +36,21 @@ class SocketClient(private val activity: Activity) {
         socket.on(Events.ON_RESPONSE_LOGIN.value) { args ->
             try {
                 val response = args[0] as JSONObject
+                val success = response.getBoolean("success")
                 val message = response.getString("message")
-                val user = Gson().fromJson(message, User::class.java)
-                Log.d(tag, "Answer to Login: $user")
+
+                activity.runOnUiThread{
+                    if(success){
+                        val user = Gson().fromJson(message, User::class.java)
+                        activity.loginSuccess(user)
+                        Log.d(tag, "Answer to Login: $user")
+
+                    } else {
+                        activity.loginFailed(message)
+                    }
+                }
+
+
             } catch (e: Exception) {
                 Log.e(tag, "Error parsing response: ${e.message}")
             }

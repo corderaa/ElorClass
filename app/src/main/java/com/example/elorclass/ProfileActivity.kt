@@ -48,7 +48,7 @@ class ProfileActivity : AppCompatActivity() {
                 val newPassword = etNewPassword.text.toString()
                 val confirmPassword = etConfirmPassword.text.toString()
                 if(oldPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()){
-                    if(oldPassword == UserSession.fetchPassword()) {
+                    if(oldPassword == UserSession.fetchUser()?.password) {
                         if (newPassword == confirmPassword) {
                             Toast.makeText(
                                 this, getString(R.string.password_updated), Toast.LENGTH_SHORT
@@ -85,12 +85,12 @@ class ProfileActivity : AppCompatActivity() {
                     language = selectedOption
                     setLocale(language)
                     val preferences =
-                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
                     if (preferences != null)
-                        db.preferencesDao().changeLanguage(language, UserSession.fetchId()!!)
+                        db.preferencesDao().changeLanguage(language, UserSession.fetchUser()?.dni!!)
                     else {
                         val user = PreferencesDB(
-                            userLogin = UserSession.fetchId().toString(),
+                            userLogin = UserSession.fetchUser()?.dni.toString(),
                             language = language,
                             theme = null
                         )
@@ -112,12 +112,12 @@ class ProfileActivity : AppCompatActivity() {
                 val themes = listOf(getString(R.string.light), getString(R.string.dark))
                 createDialog(themes, getString(R.string.theme)){ selectedOption -> theme = selectedOption
                     val preferences =
-                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchId().toString())
+                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
                     if (preferences != null)
-                        db.preferencesDao().changeTheme(theme, UserSession.fetchId()!!)
+                        db.preferencesDao().changeTheme(theme, UserSession.fetchUser()?.dni!!)
                     else {
                         val user = PreferencesDB(
-                            userLogin = UserSession.fetchId().toString(),
+                            userLogin = UserSession.fetchUser()?.dni.toString(),
                             language = null,
                             theme = theme
                         )

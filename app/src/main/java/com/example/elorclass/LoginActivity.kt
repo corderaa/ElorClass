@@ -52,6 +52,8 @@ class LoginActivity : AppCompatActivity() {
 
         socketClient = SocketClient(this)
 
+
+
         if (users.isNotEmpty()) {
             val usersNames = ArrayList<String>()
             val usersPasswords = ArrayList<String>()
@@ -76,82 +78,54 @@ class LoginActivity : AppCompatActivity() {
 
         val user = actvUser
 
-        //FALTA AÑADIR LA AUTENTICACIÓN CONTRA LA BASE DE DATOS
+
         buttonLogin.setOnClickListener {
-
-
             if (functionalities.checkConnection(connectivityManager)) {
                 socketClient!!.connect()
                 val userId = actvUser.text.toString()
+                val password = etPassword.text.toString()
+                login(userId, password)
                 //PEDIR USUARIO
-                login(actvUser.toString(), etPassword.toString())
 
-               // UserSession.setUserSession(
+                // UserSession.setUserSession(
                 //    usuarioDePrueba.name!!,
-               //     usuarioDePrueba.lastNames!!,
-               //     usuarioDePrueba.dni!!,
-               //     usuarioDePrueba.address!!,
-               //     usuarioDePrueba.phone!!,
-               //     usuarioDePrueba.phone2!!,
-               //     usuarioDePrueba.studies!!,
-               //     usuarioDePrueba.password!!,
-               //     usuarioDePrueba.schoolyear!!,
-               //     usuarioDePrueba.dual!!,
-               //     usuarioDePrueba.registered!!,
-               //     usuarioDePrueba.role!!
-               // )
-                        if (cbRememberMe.isChecked) {
-                            val user = RememberMeDB(
-                                userLogin = userId,
-                               // password = password,
-                            )
-                            val userToDelete = users.find { it.userLogin == userId }
-                            if (userToDelete != null) {
-                                db.rememberMeDao().delete(userToDelete)
-                            } else {
-                                Toast.makeText(
-                                    this,
-                                    getString(R.string.remembered_user),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                            db.rememberMeDao().insertAll(user)
-                        }
-                        if (usuarioDePrueba.registered) {
-                            val dbPreferences = Room.databaseBuilder(
-                                applicationContext,
-                                AppDatabase::class.java, "AppDatabase"
-                            ).allowMainThreadQueries().build()
-                            val userPreference = dbPreferences.preferencesDao()
-                                .getPreferenceByLogin(UserSession.fetchId().toString())
-                            if (userPreference != null) {
-                                val language = userPreference.language
-                                val theme = userPreference.theme
-                                if (language != null && language != Locale.getDefault().language)
-                                    setLocale(language)
-                                if (theme != null)
-                                    setAppTheme(theme)
-                            }
-                            val intent = Intent(this, MainPanelActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        } else {
-                            createDialog(
-                                getString(R.string.register),
-                                getString(R.string.register_needed),
-                                false
-                            )
-                        }
+                //     usuarioDePrueba.lastNames!!,
+                //     usuarioDePrueba.dni!!,
+                //     usuarioDePrueba.address!!,
+                //     usuarioDePrueba.phone!!,
+                //     usuarioDePrueba.phone2!!,
+                //     usuarioDePrueba.studies!!,
+                //     usuarioDePrueba.password!!,
+                //     usuarioDePrueba.schoolyear!!,
+                //     usuarioDePrueba.dual!!,
+                //     usuarioDePrueba.registered!!,
+                //     usuarioDePrueba.role!!
+                // )
+                if (cbRememberMe.isChecked) {
+                    val rememberMeUser = RememberMeDB(
+                        userLogin = userId,
+                        password = password,
+                    )
+                    val userToDelete = users.find { it.userLogin == userId }
+                    if (userToDelete != null) {
+                        db.rememberMeDao().delete(userToDelete)
                     } else {
-                        createDialog(
-                            getString(R.string.error),
-                            getString(R.string.wrong_password),
-                            true
-                        )
+                        Toast.makeText(
+                            this,
+                            getString(R.string.remembered_user),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                    db.rememberMeDao().insertAll(rememberMeUser)
+                }
                 actvUser.text.clear()
                 etPassword.text.clear()
+            } else {
+                createDialog(
+                    getString(R.string.error), "No tienes conexion", true
+                )
+            }
+
         }
 
         buttonForgotten.setOnClickListener {
@@ -164,7 +138,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun createDialog(title: String, message: String, registered: Boolean) {
+    fun createDialog(title: String, message: String, registered: Boolean) {
         val alertDialog = AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
@@ -182,19 +156,16 @@ class LoginActivity : AppCompatActivity() {
 
     fun login(dni: String, password: String) {
 
-        var newUser = User()
-
+        var newUser = User();
         newUser.dni = dni;
         newUser.password = password;
 
-        var message = this.gson.toJson(newUser);
+        val message = this.gson.toJson(newUser);
 
-        //val jsonObject = JSONObject()
-
-        socketClient!!.emit(Events.ON_LOGIN, message)
+        socketClient?.emit("onLogin", message.toString())
     }
 
-    private fun setLocale(language: String) {
+    fun setLocale(language: String) {
         var languageCode = ""
         when (language) {
             getString(R.string.english) -> languageCode = "en"
@@ -211,12 +182,46 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun setAppTheme(theme: String) {
+    fun setAppTheme(theme: String) {
         val mode = if (theme == getString(R.string.dark)) {
             AppCompatDelegate.MODE_NIGHT_YES
         } else {
             AppCompatDelegate.MODE_NIGHT_NO
         }
         AppCompatDelegate.setDefaultNightMode(mode)
+    }
+
+    fun loginSuccess(user: User) {
+        UserSession.setUserSession(user)
+
+        if (user.registered == true) {
+            val dbPreferences = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "AppDatabase"
+            ).allowMainThreadQueries().build()
+            val userPreference = dbPreferences.preferencesDao()
+                .getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
+            if (userPreference != null) {
+                val language = userPreference.language
+                val theme = userPreference.theme
+                if (language != null && language != Locale.getDefault().language)
+                    setLocale(language)
+                if (theme != null)
+                    setAppTheme(theme)
+            }
+            val intent = Intent(this, MainPanelActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else {
+            createDialog(
+                getString(R.string.register),
+                getString(R.string.register_needed),
+                false
+            )
+        }
+    }
+
+    fun loginFailed(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }
