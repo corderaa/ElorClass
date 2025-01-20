@@ -21,6 +21,8 @@ import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
 import java.util.Locale
+import jakarta.mail.*
+import jakarta.mail.internet.*
 
 class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

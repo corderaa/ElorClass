@@ -61,6 +61,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // MAIL
+    implementation(libs.jakarta.mail)
+
     //GIF
     implementation(libs.glide)
     annotationProcessor(libs.glideCompiler)
@@ -71,6 +74,4 @@ dependencies {
 
     // GSON
     implementation(libs.gson)
-
-
 }
