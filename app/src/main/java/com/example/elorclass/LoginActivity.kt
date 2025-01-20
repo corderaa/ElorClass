@@ -29,6 +29,14 @@ class LoginActivity : AppCompatActivity() {
 
     private var socketClient: SocketClient? = null
     val gson = Gson()
+    var cbRememberMe: CheckBox? = null;
+
+    var actvUser: AutoCompleteTextView? = null;
+    var etPassword: EditText? = null;
+
+    var users: List<RememberMeDB>? = null;
+
+    var db: AppDatabase? = null;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +50,7 @@ class LoginActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
-
+        this.db = db;
         val users: List<RememberMeDB> = db.rememberMeDao().getAll()
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
@@ -80,46 +88,13 @@ class LoginActivity : AppCompatActivity() {
 
 
         buttonLogin.setOnClickListener {
+
             if (functionalities.checkConnection(connectivityManager)) {
                 socketClient!!.connect()
                 val userId = actvUser.text.toString()
                 val password = etPassword.text.toString()
                 login(userId, password)
-                //PEDIR USUARIO
 
-                // UserSession.setUserSession(
-                //    usuarioDePrueba.name!!,
-                //     usuarioDePrueba.lastNames!!,
-                //     usuarioDePrueba.dni!!,
-                //     usuarioDePrueba.address!!,
-                //     usuarioDePrueba.phone!!,
-                //     usuarioDePrueba.phone2!!,
-                //     usuarioDePrueba.studies!!,
-                //     usuarioDePrueba.password!!,
-                //     usuarioDePrueba.schoolyear!!,
-                //     usuarioDePrueba.dual!!,
-                //     usuarioDePrueba.registered!!,
-                //     usuarioDePrueba.role!!
-                // )
-                if (cbRememberMe.isChecked) {
-                    val rememberMeUser = RememberMeDB(
-                        userLogin = userId,
-                        password = password,
-                    )
-                    val userToDelete = users.find { it.userLogin == userId }
-                    if (userToDelete != null) {
-                        db.rememberMeDao().delete(userToDelete)
-                    } else {
-                        Toast.makeText(
-                            this,
-                            getString(R.string.remembered_user),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    db.rememberMeDao().insertAll(rememberMeUser)
-                }
-                actvUser.text.clear()
-                etPassword.text.clear()
             } else {
                 createDialog(
                     getString(R.string.error), "No tienes conexion", true
@@ -162,7 +137,7 @@ class LoginActivity : AppCompatActivity() {
 
         val message = this.gson.toJson(newUser);
 
-        socketClient?.emit("onLogin", message.toString())
+        socketClient?.emit("onLogin", message)
     }
 
     fun setLocale(language: String) {
@@ -192,9 +167,25 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun loginSuccess(user: User) {
-        UserSession.setUserSession(user)
+        val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
+        if (cbRememberMeTest!!.isChecked) {
+            val rememberMeUser = RememberMeDB(
+                userLogin = actvUser?.text.toString(),
+                password = etPassword?.text.toString(),
+            )
+            val userToDelete = users?.find { it.userLogin == actvUser?.text.toString() }
+            if (userToDelete != null) {
+                db?.rememberMeDao()?.delete(userToDelete)
+            } else {
+                //Toast.makeText(
+                //    this,
+                //    getString(R.string.remembered_user),
+                //    Toast.LENGTH_SHORT
+                //).show()
 
-        if (user.registered == true) {
+            }
+            db?.rememberMeDao()?.insertAll(rememberMeUser)
+            UserSession.setUserSession(user)
             val dbPreferences = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "AppDatabase"
@@ -209,16 +200,19 @@ class LoginActivity : AppCompatActivity() {
                 if (theme != null)
                     setAppTheme(theme)
             }
-            val intent = Intent(this, MainPanelActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            createDialog(
-                getString(R.string.register),
-                getString(R.string.register_needed),
-                false
-            )
+
+
         }
+
+
+        actvUser?.text?.clear()
+        etPassword?.text?.clear()
+
+        val intent = Intent(this, MainPanelActivity::class.java)
+        startActivity(intent)
+        finish()
+
+
     }
 
     fun loginFailed(message: String) {

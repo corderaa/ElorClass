@@ -1,6 +1,5 @@
 package com.example.elorclass.socketIO
 
-import android.app.Activity
 import android.util.Log
 import com.example.elorclass.LoginActivity
 import com.example.elorclass.data.User
@@ -15,6 +14,7 @@ class SocketClient(private val activity: LoginActivity) {
 
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
+    val gson = Gson()
 
     //Log info
     private var tag = "socket.io"
@@ -33,24 +33,22 @@ class SocketClient(private val activity: LoginActivity) {
 
         // We get the answer from the socket when we login
 
-        socket.on(Events.ON_RESPONSE_LOGIN.value) { args ->
+        socket.on("onLoginAnswer") { args ->
             try {
-                val response = args[0] as JSONObject
-                val success = response.getBoolean("success")
-                val message = response.getString("message")
-
-                activity.runOnUiThread{
-                    if(success){
-                        val user = Gson().fromJson(message, User::class.java)
+                val response = JSONObject(args[0] as String);
+                Log.d(tag, "res: $response")
+                activity.runOnUiThread {
+                    if (!response.has("code") || !response.get("code").equals(500)) {
+                        val user: User = gson.fromJson(response.toString(), User::class.java)
+                        Log.d(tag, "res:");
                         activity.loginSuccess(user)
+
                         Log.d(tag, "Answer to Login: $user")
 
                     } else {
-                        activity.loginFailed(message)
+                        activity.loginFailed(response.getString("msg"))
                     }
                 }
-
-
             } catch (e: Exception) {
                 Log.e(tag, "Error parsing response: ${e.message}")
             }
@@ -83,7 +81,7 @@ class SocketClient(private val activity: LoginActivity) {
     }
 
     fun emit(value: Any, jsonObject: String) {
-    socket.emit(value.toString(), jsonObject)
+        socket.emit(value.toString(), jsonObject)
     }
 
 }

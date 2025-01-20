@@ -27,8 +27,7 @@ class MainPanelActivity : AppCompatActivity() {
 
         buttonProfile.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)){
-                val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
+
                 finish()
             } else {
                 Toast.makeText(
