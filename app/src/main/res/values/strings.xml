@@ -52,4 +52,5 @@
     <string name="cancel">Cancel</string>
     <string name="school_year">Curso</string>
     <string name="init">INICIO</string>
+    <string name="profile_title">PERFIL</string>
 </resources>
