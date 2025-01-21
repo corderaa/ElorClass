@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        val buttonConnexion: Button = findViewById(R.id.supabutton)
+        val buttonConnexion: Button = findViewById(R.id.buttonInit)
 
         val networkRequest = NetworkRequest.Builder()
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
