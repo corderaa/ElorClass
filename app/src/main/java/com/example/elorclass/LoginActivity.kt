@@ -4,6 +4,7 @@ package com.example.elorclass
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -30,11 +31,11 @@ class LoginActivity : AppCompatActivity() {
     private var socketClient: SocketClient? = null
     val gson = Gson()
     var cbRememberMe: CheckBox? = null;
-
     var actvUser: AutoCompleteTextView? = null;
     var etPassword: EditText? = null;
-
     var users: List<RememberMeDB>? = null;
+    var password: String? = null;
+
 
     var db: AppDatabase? = null;
 
@@ -51,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
         this.db = db;
-        val users: List<RememberMeDB> = db.rememberMeDao().getAll()
+        users = db.rememberMeDao().getAll()
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
@@ -62,17 +63,17 @@ class LoginActivity : AppCompatActivity() {
 
 
 
-        if (users.isNotEmpty()) {
+        if (users!!.isNotEmpty()) {
             val usersNames = ArrayList<String>()
             val usersPasswords = ArrayList<String>()
-            for (user in users) {
+            for (user in users!!) {
                 usersNames.add(user.userLogin)
                 usersPasswords.add(user.password)
             }
             val adapterUser =
                 ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, usersNames)
-            val rememberedUserLogin: String = usersNames[users.size - 1]
-            val rememberPassword: String = usersPasswords[users.size - 1]
+            val rememberedUserLogin: String = usersNames[users!!.size - 1]
+            val rememberPassword: String = usersPasswords[users!!.size - 1]
             actvUser.setAdapter(adapterUser)
             actvUser.threshold = 1
             actvUser.setText(rememberedUserLogin)
@@ -92,8 +93,8 @@ class LoginActivity : AppCompatActivity() {
             if (functionalities.checkConnection(connectivityManager)) {
                 socketClient!!.connect()
                 val userId = actvUser.text.toString()
-                val password = etPassword.text.toString()
-                login(userId, password)
+                password = etPassword.text.toString()
+                login(userId, password!!)
 
             } else {
                 createDialog(
@@ -169,13 +170,18 @@ class LoginActivity : AppCompatActivity() {
     fun loginSuccess(user: User) {
         val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
         if (cbRememberMeTest!!.isChecked) {
-            val rememberMeUser = RememberMeDB(
-                userLogin = actvUser?.text.toString(),
-                password = etPassword?.text.toString(),
-            )
-            val userToDelete = users?.find { it.userLogin == actvUser?.text.toString() }
+            val rememberMeUser = user.dni?.let {
+                password?.let { it2 ->
+                    RememberMeDB(
+                        userLogin = it,
+                        password = it2
+                    )
+                }
+            }
+            val userToDelete = users?.find { user.dni.equals(it.userLogin, ignoreCase = true) }
             if (userToDelete != null) {
                 db?.rememberMeDao()?.delete(userToDelete)
+
             } else {
                 //Toast.makeText(
                 //    this,
@@ -184,7 +190,14 @@ class LoginActivity : AppCompatActivity() {
                 //).show()
 
             }
-            db?.rememberMeDao()?.insertAll(rememberMeUser)
+            try {
+                Log.d("d", rememberMeUser?.userLogin.toString())
+                db?.rememberMeDao()?.insertAll(rememberMeUser!!)
+            } catch (e: Exception) {
+                e.message
+                Log.e("Database Error", e.toString())
+            }
+
             UserSession.setUserSession(user)
             val dbPreferences = Room.databaseBuilder(
                 applicationContext,
@@ -200,10 +213,7 @@ class LoginActivity : AppCompatActivity() {
                 if (theme != null)
                     setAppTheme(theme)
             }
-
-
         }
-
 
         actvUser?.text?.clear()
         etPassword?.text?.clear()
@@ -211,7 +221,6 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, MainPanelActivity::class.java)
         startActivity(intent)
         finish()
-
 
     }
 
