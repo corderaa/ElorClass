@@ -37,6 +37,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    packaging {
+        resources {
+            excludes.addAll(
+                mutableSetOf(
+                    "META-INF/NOTICE.md",
+                    "META-INF/LICENSE.md"
+                )
+            )
+        }
+    }
+
 }
 
 dependencies {
