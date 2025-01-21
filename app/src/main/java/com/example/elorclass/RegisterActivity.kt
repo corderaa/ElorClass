@@ -22,11 +22,25 @@ import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
 
 class RegisterActivity : AppCompatActivity() {
+
+    lateinit var etName: EditText;
+    lateinit var etSurname: EditText;
+    lateinit var etId: EditText;
+    lateinit var etAdress: EditText;
+    lateinit var etFirstTelephone: EditText;
+    lateinit var etSecondTelephone: EditText;
+    lateinit var etStudies: EditText;
+    lateinit var etYear: EditText;
+    lateinit var etDual: EditText;
+    lateinit var etPassword: EditText;
+    lateinit var etConfirmPassword: EditText;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.register)
-        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
         val buttonRegister = findViewById<Button>(R.id.buttonRegister)
         val buttonGoBack = findViewById<Button>(R.id.buttonLogout)
@@ -35,17 +49,17 @@ class RegisterActivity : AppCompatActivity() {
         years.add(getString(R.string.first))
         years.add(getString(R.string.second))
         val selectedOptionInteger = 0
-        val etName = findViewById<EditText>(R.id.editTextName)
-        val etSurname = findViewById<EditText>(R.id.editTextSurname)
-        val etId = findViewById<EditText>(R.id.editTextID)
-        val etAdress = findViewById<EditText>(R.id.editTextAdress)
-        val etFirstTelephone = findViewById<EditText>(R.id.editTextFirstTelephone)
-        val etSecondTelephone = findViewById<EditText>(R.id.editTextSecondTelephone)
-        val etStudies = findViewById<EditText>(R.id.editTextStudies)
-        val etYear = findViewById<EditText>(R.id.editTextYear)
-        val etDual = findViewById<EditText>(R.id.editTextDual)
-        val etPassword = findViewById<EditText>(R.id.editTextPassword)
-        val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
+        etName = findViewById<EditText>(R.id.editTextName)
+        etSurname = findViewById<EditText>(R.id.editTextSurname)
+        etId = findViewById<EditText>(R.id.editTextID)
+        etAdress = findViewById<EditText>(R.id.editTextAdress)
+        etFirstTelephone = findViewById<EditText>(R.id.editTextFirstTelephone)
+        etSecondTelephone = findViewById<EditText>(R.id.editTextSecondTelephone)
+        etStudies = findViewById<EditText>(R.id.editTextStudies)
+        etYear = findViewById<EditText>(R.id.editTextYear)
+        etDual = findViewById<EditText>(R.id.editTextDual)
+        etPassword = findViewById<EditText>(R.id.editTextPassword)
+        etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
 
         val startForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -58,15 +72,25 @@ class RegisterActivity : AppCompatActivity() {
             }
 
 
-        autoCompleteData(etName, etSurname, etId, etAdress, etFirstTelephone, etSecondTelephone, etStudies, etYear, etDual)
+        autoCompleteData(
+            etName,
+            etSurname,
+            etId,
+            etAdress,
+            etFirstTelephone,
+            etSecondTelephone,
+            etStudies,
+            etYear,
+            etDual
+        )
 
-        if (UserSession.fetchRole() != 2) {
+        if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 2) {
             etStudies.visibility = View.GONE
             etYear.visibility = View.GONE
             etDual.visibility = View.GONE
         }
         buttonRegister.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 val password = etPassword.text.toString()
                 val confirmPassword = etConfirmPassword.text.toString()
                 val name = etName.text.toString()
@@ -78,44 +102,21 @@ class RegisterActivity : AppCompatActivity() {
                 val studies = etStudies.text.toString()
                 if (name.isNotEmpty() && surname.isNotEmpty() && id.isNotEmpty()
                     && adress.isNotEmpty() && firstTelephone.isNotEmpty() && secondTelephone.isNotEmpty()
-                    && password.isNotEmpty() && confirmPassword.isNotEmpty()){
+                    && password.isNotEmpty() && confirmPassword.isNotEmpty()
+                ) {
                     if (password == confirmPassword) {
-                        if(password == UserSession.fetchPassword()){
+                        if (password == UserSession.fetchUser()?.password) {
                             Toast.makeText(
                                 this, getString(R.string.change_your_password), Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            val dual = true
-                            val user = User(
-                                name = name,
-                                surname = surname,
-                                id = id,
-                                adress = adress,
-                                firstTelephone = firstTelephone,
-                                secondTelephone = secondTelephone,
-                                studies = studies,
-                                schoolyear = selectedOptionInteger,
-                                dual = dual,
-                                password = password,
-                                registered = true,
-                                role = 2
-                            )
+                            // Crear usuario o coger usuario
+                            val testUser: User = User()
+
                             //ENVIAR "user" A LA BASE DE DATOS
-                            UserSession.setUserSession(
-                                user.name!!, user.surname!!, user.id!!,
-                                user.adress!!, user.firstTelephone!!, user.secondTelephone!!,
-                                user.studies!!, user.password!!, user.schoolyear!!,
-                                user.dual!!, user.registered!!, user.role!!
-                            )
-                            etName.text.clear()
-                            etSurname.text.clear()
-                            etId.text.clear()
-                            etAdress.text.clear()
-                            etFirstTelephone.text.clear()
-                            etSecondTelephone.text.clear()
-                            etStudies.text.clear()
-                            etPassword.text.clear()
-                            etConfirmPassword.text.clear()
+                            UserSession.setUserSession(testUser)
+
+
                             val intent = Intent(this, LoginActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -141,7 +142,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         buttonGoBack.setOnClickListener {
-            if(functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -168,21 +169,33 @@ class RegisterActivity : AppCompatActivity() {
         etYear: EditText?,
         etDual: EditText?,
     ) {
-        etName?.setText(UserSession.fetchName()!!)
-        etSurname?.setText(UserSession.fetchSurname()!!)
-        etId?.setText(UserSession.fetchId()!!)
-        etAdress?.setText(UserSession.fetchAdress()!!)
-        etFirstTelephone?.setText(UserSession.fetchFirstTelephone()!!)
-        etSecondTelephone?.setText(UserSession.fetchSecondTelephone()!!)
-        etStudies?.setText(UserSession.fetchStudies()!!)
-        val year = UserSession.fetchSchoolyear()
-        if (year == 1)
-            etYear?.setText(getString(R.string.first))
-        else
-            etYear?.setText(getString(R.string.second))
-        if (UserSession.fetchDual()==true){
-            etDual?.setText(getString(R.string.dual_studies))
-        } else
-            etDual?.setText(getString(R.string.no_dual_studies))
+        etName?.setText(UserSession.fetchUser()?.name!!)
+        etSurname?.setText(UserSession.fetchUser()?.lastNames!!)
+        etId?.setText(UserSession.fetchUser()?.dni!!)
+        etAdress?.setText(UserSession.fetchUser()?.address!!)
+        etFirstTelephone?.setText(UserSession.fetchUser()?.phone!!)
+        etSecondTelephone?.setText(UserSession.fetchUser()?.phone2!!)
+        etStudies?.setText(UserSession.fetchUser()?.studies!!)
+        //val year = UserSession.fetchUser()?.
+       // if (year == 1)
+         //   etYear?.setText(getString(R.string.first))
+        //else
+          //  etYear?.setText(getString(R.string.second))
+        //if (UserSession.fetchDual() == true) {
+          //  etDual?.setText(getString(R.string.dual_studies))
+        //} else
+         //   etDual?.setText(getString(R.string.no_dual_studies))
+    }
+
+    private fun clearFields() {
+        etName.text.clear()
+        etSurname.text.clear()
+        etId.text.clear()
+        etAdress.text.clear()
+        etFirstTelephone.text.clear()
+        etSecondTelephone.text.clear()
+        etStudies.text.clear()
+        etPassword.text.clear()
+        etConfirmPassword.text.clear()
     }
 }
