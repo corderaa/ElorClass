@@ -46,7 +46,8 @@ class SocketClient(private val activity: LoginActivity) {
                         activity.userRegistered(user)
 
                         Log.d(tag, "Answer to Login: $user")
-                        
+
+
                     } else {
                         activity.loginFailed(response.getString("msg"))
                     }

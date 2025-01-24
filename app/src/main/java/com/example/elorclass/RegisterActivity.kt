@@ -72,18 +72,22 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-        autoCompleteData(
-            etName,
-            etSurname,
-            etId,
-            etAdress,
-            etFirstTelephone,
-            etSecondTelephone,
-            etStudies,
-            etYear,
-            etDual
-        )
+        try {
+            autoCompleteData(
+                etName,
+                etSurname,
+                etId,
+                etAdress,
+                etFirstTelephone,
+                etSecondTelephone,
+                etStudies,
+                etYear,
+                etDual
+            )
 
+        } catch (e: Exception) {
+            Log.d("Error", e.message.toString())
+        }
 
         if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 2) {
             etStudies.visibility = View.GONE
