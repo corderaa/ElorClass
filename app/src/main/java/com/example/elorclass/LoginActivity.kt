@@ -25,9 +25,6 @@ import com.example.elorclass.functionalities.SendEmailTask
 import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
 import java.util.Locale
-import jakarta.mail.*
-import jakarta.mail.internet.*
-import java.util.Properties
 
 class LoginActivity : AppCompatActivity() {
 
