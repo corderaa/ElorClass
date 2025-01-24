@@ -22,6 +22,8 @@ import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
 import com.example.elorclass.functionalities.SendEmailTask
+import com.example.elorclass.socketIO.SocketClient
+import com.google.gson.Gson
 import java.util.Locale
 import jakarta.mail.*
 import jakarta.mail.internet.*
