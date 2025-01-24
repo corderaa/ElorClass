@@ -25,22 +25,19 @@ import com.example.elorclass.functionalities.SendEmailTask
 import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
 import java.util.Locale
-import jakarta.mail.*
-import jakarta.mail.internet.*
-import java.util.Properties
 
 class LoginActivity : AppCompatActivity() {
 
     private var socketClient: SocketClient? = null
     val gson = Gson()
-    var cbRememberMe: CheckBox? = null;
-    var actvUser: AutoCompleteTextView? = null;
-    var etPassword: EditText? = null;
-    var users: List<RememberMeDB>? = null;
-    var password: String? = null;
+    var cbRememberMe: CheckBox? = null
+    var actvUser: AutoCompleteTextView? = null
+    var etPassword: EditText? = null
+    var users: List<RememberMeDB>? = null
+    var password: String? = null
 
 
-    var db: AppDatabase? = null;
+    var db: AppDatabase? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
-        this.db = db;
+        this.db = db
         users = db.rememberMeDao().getAll()
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
@@ -119,7 +116,13 @@ class LoginActivity : AppCompatActivity() {
                 val subject = "asunto"
                 val message = "mensaje"
 
-                SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
+                SendEmailTask(
+                    senderEmail,
+                    senderPassword,
+                    recipientEmail,
+                    subject,
+                    message
+                ).execute()
 
             }
         }
@@ -143,11 +146,11 @@ class LoginActivity : AppCompatActivity() {
 
     fun login(dni: String, password: String) {
 
-        var newUser = User();
-        newUser.dni = dni;
-        newUser.password = password;
+        var newUser = User()
+        newUser.dni = dni
+        newUser.password = password
 
-        val message = this.gson.toJson(newUser);
+        val message = this.gson.toJson(newUser)
 
         socketClient?.emit("onLogin", message)
     }
@@ -178,9 +181,20 @@ class LoginActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
+    fun userRegistered(user: User) {
+        if (user.registered == true) {
+            loginSuccess(user)
+        } else {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+            finish()
+
+        }
+    }
+
     fun loginSuccess(user: User) {
         val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
-        if (cbRememberMeTest!!.isChecked) {
+        if (cbRememberMeTest.isChecked) {
             val rememberMeUser = user.dni?.let {
                 password?.let { it2 ->
                     RememberMeDB(
@@ -194,11 +208,11 @@ class LoginActivity : AppCompatActivity() {
                 db?.rememberMeDao()?.delete(userToDelete)
 
             } else {
-                //Toast.makeText(
-                //    this,
-                //    getString(R.string.remembered_user),
-                //    Toast.LENGTH_SHORT
-                //).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.remembered_user),
+                    Toast.LENGTH_SHORT
+                ).show()
 
             }
             try {
@@ -208,8 +222,6 @@ class LoginActivity : AppCompatActivity() {
                 e.message
                 Log.e("Database Error", e.toString())
             }
-
-            UserSession.setUserSession(user)
             val dbPreferences = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "AppDatabase"
