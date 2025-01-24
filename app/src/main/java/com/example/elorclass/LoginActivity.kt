@@ -20,9 +20,11 @@ import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
+import com.example.elorclass.functionalities.SendEmailTask
 import java.util.Locale
 import jakarta.mail.*
 import jakarta.mail.internet.*
+import java.util.Properties
 
 class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +83,7 @@ class LoginActivity: AppCompatActivity() {
                     schoolyear = 2,
                     dual = true,
                     password = "password",
-                    registered = false,
+                    registered = true,
                     role = 3)
                 UserSession.setUserSession(usuarioDePrueba.name!!, usuarioDePrueba.surname!!, usuarioDePrueba.id!!,
                     usuarioDePrueba.adress!!, usuarioDePrueba.firstTelephone!!, usuarioDePrueba.secondTelephone!!,
@@ -154,6 +156,14 @@ class LoginActivity: AppCompatActivity() {
                 val newPassword = functionalities.generateRandomPassword(10)
                 val userForgottenPassword = User(id = userLogin, password = newPassword)
                 //Mandar este usuario al servidor
+                val senderEmail = "elorclass@gmail.com"
+                val senderPassword = "apld msns reek cocx"
+                val recipientEmail = "ugaitz.corderosa@elorrieta-errekamari.com"
+                val subject = "asunto"
+                val message = "mensaje"
+
+                SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
+
             }
         }
     }
