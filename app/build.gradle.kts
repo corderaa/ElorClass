@@ -37,6 +37,18 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    packaging {
+        resources {
+            excludes.addAll(
+                mutableSetOf(
+                    "META-INF/NOTICE.md",
+                    "META-INF/LICENSE.md"
+                )
+            )
+        }
+    }
+
 }
 
 dependencies {
@@ -61,6 +73,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // MAIL
+    implementation(libs.jakarta.mail)
+
     //GIF
     implementation(libs.glide)
     annotationProcessor(libs.glideCompiler)
@@ -71,6 +86,4 @@ dependencies {
 
     // GSON
     implementation(libs.gson)
-
-
 }

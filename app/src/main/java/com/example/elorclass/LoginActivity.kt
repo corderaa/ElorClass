@@ -21,10 +21,11 @@ import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.RememberMeDB
-import com.example.elorclass.socketIO.SocketClient
-import com.example.elorclass.socketIO.config.Events
-import com.google.gson.Gson
+import com.example.elorclass.functionalities.SendEmailTask
 import java.util.Locale
+import jakarta.mail.*
+import jakarta.mail.internet.*
+import java.util.Properties
 
 class LoginActivity : AppCompatActivity() {
 
@@ -110,6 +111,14 @@ class LoginActivity : AppCompatActivity() {
                 val newPassword = functionalities.generateRandomPassword(10)
                 val userForgottenPassword = User(dni = userLogin, password = newPassword)
                 //Mandar este usuario al servidor
+                val senderEmail = "elorclass@gmail.com"
+                val senderPassword = "apld msns reek cocx"
+                val recipientEmail = "ugaitz.corderosa@elorrieta-errekamari.com"
+                val subject = "asunto"
+                val message = "mensaje"
+
+                SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
+
             }
         }
     }

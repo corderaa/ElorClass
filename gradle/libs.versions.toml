@@ -37,6 +37,7 @@ engine-io-client = { module = "io.socket:engine.io-client", version = "2.1.0" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glideCompiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
+jakarta-mail = "com.sun.mail:jakarta.mail:2.0.1"
 
 
 [plugins]
