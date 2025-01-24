@@ -105,6 +105,7 @@ class LoginActivity : AppCompatActivity() {
 
         buttonForgotten.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)) {
+                socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
                 changePassword(userLogin)
 
@@ -213,11 +214,11 @@ class LoginActivity : AppCompatActivity() {
                 db?.rememberMeDao()?.delete(userToDelete)
 
             } else {
-                //Toast.makeText(
-                //    this,
-                //    getString(R.string.remembered_user),
-                //    Toast.LENGTH_SHORT
-                //).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.remembered_user),
+                    Toast.LENGTH_SHORT
+                ).show()
 
             }
             try {
