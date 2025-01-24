@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -71,7 +72,6 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-
         autoCompleteData(
             etName,
             etSurname,
@@ -83,6 +83,7 @@ class RegisterActivity : AppCompatActivity() {
             etYear,
             etDual
         )
+
 
         if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 2) {
             etStudies.visibility = View.GONE
@@ -176,15 +177,15 @@ class RegisterActivity : AppCompatActivity() {
         etFirstTelephone?.setText(UserSession.fetchUser()?.phone!!)
         etSecondTelephone?.setText(UserSession.fetchUser()?.phone2!!)
         etStudies?.setText(UserSession.fetchUser()?.studies!!)
-        //val year = UserSession.fetchUser()?.
-       // if (year == 1)
-         //   etYear?.setText(getString(R.string.first))
-        //else
-          //  etYear?.setText(getString(R.string.second))
-        //if (UserSession.fetchDual() == true) {
-          //  etDual?.setText(getString(R.string.dual_studies))
-        //} else
-         //   etDual?.setText(getString(R.string.no_dual_studies))
+        val year = UserSession.fetchUser()?.schoolyear
+        if (year == 1)
+            etYear?.setText(getString(R.string.first))
+        else
+            etYear?.setText(getString(R.string.second))
+        if (UserSession.fetchUser()?.dual == true) {
+            etDual?.setText(getString(R.string.dual_studies))
+        } else
+            etDual?.setText(getString(R.string.no_dual_studies))
     }
 
     private fun clearFields() {
