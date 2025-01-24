@@ -35,9 +35,10 @@ class LoginActivity : AppCompatActivity() {
     var etPassword: EditText? = null;
     var users: List<RememberMeDB>? = null;
     var password: String? = null;
+    val functionalities = Functionalities()
 
 
-    var db: AppDatabase? = null;
+    lateinit var db: AppDatabase;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,12 +47,10 @@ class LoginActivity : AppCompatActivity() {
 
         val connectivityManager =
             getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        val functionalities = Functionalities()
-        val db = Room.databaseBuilder(
+        db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
-        this.db = db;
         users = db.rememberMeDao().getAll()
         val buttonLogin: Button = findViewById(R.id.buttonLogin)
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
@@ -107,9 +106,8 @@ class LoginActivity : AppCompatActivity() {
         buttonForgotten.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)) {
                 val userLogin = actvUser.text.toString()
-                val newPassword = functionalities.generateRandomPassword(10)
-                val userForgottenPassword = User(dni = userLogin, password = newPassword)
-                //Mandar este usuario al servidor
+                changePassword(userLogin)
+
                 val senderEmail = "elorclass@gmail.com"
                 val senderPassword = "apld msns reek cocx"
                 val recipientEmail = "ugaitz.corderosa@elorrieta-errekamari.com"
@@ -149,6 +147,18 @@ class LoginActivity : AppCompatActivity() {
         socketClient?.emit("onLogin", message)
     }
 
+    fun changePassword(dni: String) {
+
+        var newUser = User();
+        newUser.dni = dni;
+        val randomPassword = functionalities.generateRandomPassword(10)
+        newUser.password = randomPassword
+        password = randomPassword
+        val message = this.gson.toJson(newUser);
+
+        socketClient?.emit("onPasswordChange", message)
+    }
+
     fun setLocale(language: String) {
         var languageCode = ""
         when (language) {
@@ -173,6 +183,18 @@ class LoginActivity : AppCompatActivity() {
             AppCompatDelegate.MODE_NIGHT_NO
         }
         AppCompatDelegate.setDefaultNightMode(mode)
+    }
+
+    fun passwordChangedSuccess(user:User){
+
+        val senderEmail = "elorclass@gmail.com"
+        val senderPassword = "apld msns reek cocx"
+        val recipientEmail = user.email.toString()
+        val subject = "asunto"
+        val message = password.toString()
+
+        SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
+        password = null
     }
 
     fun loginSuccess(user: User) {

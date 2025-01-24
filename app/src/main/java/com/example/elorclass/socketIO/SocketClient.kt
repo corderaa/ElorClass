@@ -54,6 +54,27 @@ class SocketClient(private val activity: LoginActivity) {
             }
         }
 
+        socket.on("onPasswordChangeAnswer"){ args ->
+
+            try {
+                val response = JSONObject(args[0] as String);
+                Log.d(tag, "res: $response")
+                activity.runOnUiThread {
+                    if (!response.has("code") || !response.get("code").equals(500)) {
+                        val user: User = gson.fromJson(response.toString(), User::class.java)
+                        Log.d(tag, "res:");
+                        activity.loginSuccess(user)
+
+                        Log.d(tag, "Answer to Login: $user")
+
+                    } else {
+                        activity.loginFailed(response.getString("msg"))
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(tag, "Error parsing response: ${e.message}")
+            }
+        }
 
         socket.on(Events.ON_GET_ALL.value) { args ->
 
