@@ -25,6 +25,9 @@ import com.example.elorclass.functionalities.SendEmailTask
 import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
 import java.util.Locale
+import jakarta.mail.*
+import jakarta.mail.internet.*
+import java.util.Properties
 
 class LoginActivity : AppCompatActivity() {
 
@@ -115,7 +118,13 @@ class LoginActivity : AppCompatActivity() {
                 val subject = "asunto"
                 val message = "mensaje"
 
-                SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
+                SendEmailTask(
+                    senderEmail,
+                    senderPassword,
+                    recipientEmail,
+                    subject,
+                    message
+                ).execute()
 
             }
         }
@@ -186,6 +195,17 @@ class LoginActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(mode)
     }
 
+    fun userRegistered(user: User) {
+        if (user.registered == true) {
+            loginSuccess(user)
+        } else {
+
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
     fun passwordChangedSuccess(user:User){
 
         val senderEmail = "elorclass@gmail.com"
@@ -227,9 +247,7 @@ class LoginActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.message
                 Log.e("Database Error", e.toString())
-            }
-
-            UserSession.setUserSession(user)
+            };
             val dbPreferences = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "AppDatabase"

@@ -3,6 +3,7 @@ package com.example.elorclass.socketIO
 import android.util.Log
 import com.example.elorclass.LoginActivity
 import com.example.elorclass.data.User
+import com.example.elorclass.data.UserSession
 import com.example.elorclass.socketIO.config.Events
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -41,9 +42,11 @@ class SocketClient(private val activity: LoginActivity) {
                     if (!response.has("code") || !response.get("code").equals(500)) {
                         val user: User = gson.fromJson(response.toString(), User::class.java)
                         Log.d(tag, "res:");
-                        activity.loginSuccess(user)
+                        UserSession.setUserSession(user)
+                        activity.userRegistered(user)
 
                         Log.d(tag, "Answer to Login: $user")
+
 
                     } else {
                         activity.loginFailed(response.getString("msg"))
@@ -90,9 +93,7 @@ class SocketClient(private val activity: LoginActivity) {
                 Log.e(tag, "Error: ${e.message}")
             }
 
-
         }
-
 
     }
 
