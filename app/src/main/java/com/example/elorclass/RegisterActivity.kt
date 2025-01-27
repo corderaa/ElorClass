@@ -76,6 +76,8 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
+        val user = UserSession.fetchUser()
+        Log.d("UserSession", "UserSession " + user)
         try {
             autoCompleteData(
                 etName,
@@ -91,7 +93,7 @@ class RegisterActivity : AppCompatActivity() {
             )
 
         } catch (e: Exception) {
-            Log.d("Error", e.message.toString())
+            Log.e("Error", e.message.toString())
         }
 
         if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 4) {
@@ -180,13 +182,15 @@ class RegisterActivity : AppCompatActivity() {
         etYear: EditText?,
         etDual: EditText?,
     ) {
+        val user = UserSession.fetchUser()
+        Log.d("UserSession", "UserSession " + user)
         etName?.setText(UserSession.fetchUser()?.name!!)
         etSurname?.setText(UserSession.fetchUser()?.lastNames!!)
         etId?.setText(UserSession.fetchUser()?.dni!!)
         etAdress?.setText(UserSession.fetchUser()?.address!!)
         etFirstTelephone?.setText(UserSession.fetchUser()?.phone!!)
         etSecondTelephone?.setText(UserSession.fetchUser()?.phone2!!)
-        etMail?.setText(UserSession.fetchUser()?.email!!)
+        etMail?.setText(UserSession.fetchUser()?.email.toString())
         etStudies?.setText(UserSession.fetchUser()?.studies!!)
         val year = UserSession.fetchUser()?.schoolyear
         if (year == 1)
