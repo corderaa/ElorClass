@@ -110,7 +110,6 @@ class RegisterActivity : AppCompatActivity() {
                 val adress = etAdress.text.toString()
                 val firstTelephone = etFirstTelephone.text.toString()
                 val secondTelephone = etSecondTelephone.text.toString()
-                val studies = etStudies.text.toString()
                 if (name.isNotEmpty() && surname.isNotEmpty() && id.isNotEmpty()
                     && adress.isNotEmpty() && firstTelephone.isNotEmpty() && secondTelephone.isNotEmpty()
                     && password.isNotEmpty() && confirmPassword.isNotEmpty()
