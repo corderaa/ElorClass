@@ -37,6 +37,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etMail: EditText
     lateinit var etPassword: EditText
     lateinit var etConfirmPassword: EditText
+    val user = UserSession.fetchUser()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,8 +77,6 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-        val user = UserSession.fetchUser()
-        Log.d("UserSession", "UserSession " + user)
         try {
             autoCompleteData(
                 etName,
@@ -184,15 +183,15 @@ class RegisterActivity : AppCompatActivity() {
     ) {
         val user = UserSession.fetchUser()
         Log.d("UserSession", "UserSession " + user)
-        etName?.setText(UserSession.fetchUser()?.name!!)
-        etSurname?.setText(UserSession.fetchUser()?.lastNames!!)
-        etId?.setText(UserSession.fetchUser()?.dni!!)
-        etAdress?.setText(UserSession.fetchUser()?.address!!)
-        etFirstTelephone?.setText(UserSession.fetchUser()?.phone!!)
-        etSecondTelephone?.setText(UserSession.fetchUser()?.phone2!!)
-        etMail?.setText(UserSession.fetchUser()?.email.toString())
-        etStudies?.setText(UserSession.fetchUser()?.studies!!)
-        val year = UserSession.fetchUser()?.schoolyear
+        etName?.setText(user?.name.toString())
+        etSurname?.setText(user?.lastNames.toString())
+        etId?.setText(user?.dni.toString())
+        etAdress?.setText(user?.address.toString())
+        etFirstTelephone?.setText(user?.phone.toString())
+        etSecondTelephone?.setText(user?.phone2.toString())
+        etMail?.setText(user?.email.toString())
+        etStudies?.setText(user?.studies.toString())
+        val year = user?.schoolyear
         if (year == 1)
             etYear?.setText(getString(R.string.first))
         else
