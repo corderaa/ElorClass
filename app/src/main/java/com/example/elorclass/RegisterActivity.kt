@@ -89,7 +89,7 @@ class RegisterActivity : AppCompatActivity() {
             Log.d("Error", e.message.toString())
         }
 
-        if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 2) {
+        if (UserSession.fetchUser()?.userTypes?.id?.toInt() != 4) {
             etStudies.visibility = View.GONE
             etYear.visibility = View.GONE
             etDual.visibility = View.GONE
