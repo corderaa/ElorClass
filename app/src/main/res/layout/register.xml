@@ -88,6 +88,16 @@
                 tools:layout_editor_absoluteX="16dp" />
 
             <EditText
+                android:id="@+id/editTextMail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:hint="@string/mail"
+                android:inputType="text"
+                tools:layout_editor_absoluteX="16dp" />
+
+            <EditText
                 android:id="@+id/editTextFirstTelephone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

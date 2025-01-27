@@ -25,17 +25,18 @@ import java.io.ByteArrayOutputStream
 
 class RegisterActivity : AppCompatActivity() {
 
-    lateinit var etName: EditText;
-    lateinit var etSurname: EditText;
-    lateinit var etId: EditText;
-    lateinit var etAdress: EditText;
-    lateinit var etFirstTelephone: EditText;
-    lateinit var etSecondTelephone: EditText;
-    lateinit var etStudies: EditText;
-    lateinit var etYear: EditText;
-    lateinit var etDual: EditText;
-    lateinit var etPassword: EditText;
-    lateinit var etConfirmPassword: EditText;
+    lateinit var etName: EditText
+    lateinit var etSurname: EditText
+    lateinit var etId: EditText
+    lateinit var etAdress: EditText
+    lateinit var etFirstTelephone: EditText
+    lateinit var etSecondTelephone: EditText
+    lateinit var etStudies: EditText
+    lateinit var etYear: EditText
+    lateinit var etDual: EditText
+    lateinit var etMail: EditText
+    lateinit var etPassword: EditText
+    lateinit var etConfirmPassword: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,7 @@ class RegisterActivity : AppCompatActivity() {
         etAdress = findViewById<EditText>(R.id.editTextAdress)
         etFirstTelephone = findViewById<EditText>(R.id.editTextFirstTelephone)
         etSecondTelephone = findViewById<EditText>(R.id.editTextSecondTelephone)
+        etMail = findViewById<EditText>(R.id.editTextMail)
         etStudies = findViewById<EditText>(R.id.editTextStudies)
         etYear = findViewById<EditText>(R.id.editTextYear)
         etDual = findViewById<EditText>(R.id.editTextDual)
@@ -82,6 +84,7 @@ class RegisterActivity : AppCompatActivity() {
                 etAdress,
                 etFirstTelephone,
                 etSecondTelephone,
+                etMail,
                 etStudies,
                 etYear,
                 etDual
@@ -172,6 +175,7 @@ class RegisterActivity : AppCompatActivity() {
         etAdress: EditText?,
         etFirstTelephone: EditText?,
         etSecondTelephone: EditText?,
+        etMail: EditText?,
         etStudies: EditText?,
         etYear: EditText?,
         etDual: EditText?,
@@ -182,6 +186,7 @@ class RegisterActivity : AppCompatActivity() {
         etAdress?.setText(UserSession.fetchUser()?.address!!)
         etFirstTelephone?.setText(UserSession.fetchUser()?.phone!!)
         etSecondTelephone?.setText(UserSession.fetchUser()?.phone2!!)
+        etMail?.setText(UserSession.fetchUser()?.email!!)
         etStudies?.setText(UserSession.fetchUser()?.studies!!)
         val year = UserSession.fetchUser()?.schoolyear
         if (year == 1)
@@ -208,7 +213,7 @@ class RegisterActivity : AppCompatActivity() {
 
     fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)  // Usamos PNG, pero puedes usar otros formatos.
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
     }
 }
