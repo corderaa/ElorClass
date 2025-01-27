@@ -20,6 +20,7 @@ import androidx.transition.Visibility
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
+import java.io.ByteArrayOutputStream
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -68,6 +69,7 @@ class RegisterActivity : AppCompatActivity() {
                     val imageBitmap = intent?.extras?.get("data") as Bitmap
                     val imageView = findViewById<ImageView>(R.id.imageView2)
                     imageView.setImageBitmap(imageBitmap)
+                    val imageBytes = bitmapToByteArray(imageBitmap)
                 }
             }
 
@@ -197,5 +199,11 @@ class RegisterActivity : AppCompatActivity() {
         etStudies.text.clear()
         etPassword.text.clear()
         etConfirmPassword.text.clear()
+    }
+
+    fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)  // Usamos PNG, pero puedes usar otros formatos.
+        return byteArrayOutputStream.toByteArray()
     }
 }
