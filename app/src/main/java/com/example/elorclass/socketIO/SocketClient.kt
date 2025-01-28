@@ -15,7 +15,7 @@ class SocketClient(private val activity: LoginActivity) {
 
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
-    val gson = Gson()
+    private val gson = Gson()
 
     //Log info
     private var tag = "socket.io"
@@ -36,12 +36,12 @@ class SocketClient(private val activity: LoginActivity) {
 
         socket.on("onLoginAnswer") { args ->
             try {
-                val response = JSONObject(args[0] as String);
+                val response = JSONObject(args[0] as String)
                 Log.d(tag, "res: $response")
                 activity.runOnUiThread {
                     if (!response.has("code") || !response.get("code").equals(500)) {
                         val user: User = gson.fromJson(response.toString(), User::class.java)
-                        Log.d(tag, "res:");
+                        Log.d(tag, "res:")
                         UserSession.setUserSession(user)
                         activity.userRegistered(user)
 
@@ -57,15 +57,15 @@ class SocketClient(private val activity: LoginActivity) {
             }
         }
 
-        socket.on("onPasswordChangeAnswer"){ args ->
-
+        socket.on("onForgottenPasswordChange"){ args ->
+            Log.d("forgotten Password", "forgotten Password")
             try {
-                val response = JSONObject(args[0] as String);
+                val response = JSONObject(args[0] as String)
                 Log.d(tag, "res: $response")
                 activity.runOnUiThread {
                     if (!response.has("code") || !response.get("code").equals(500)) {
                         val user: User = gson.fromJson(response.toString(), User::class.java)
-                        Log.d(tag, "res:");
+                        Log.d(tag, "res:")
                         activity.loginSuccess(user)
 
                         Log.d(tag, "Answer to Login: $user")

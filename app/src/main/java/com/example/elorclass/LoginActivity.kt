@@ -110,13 +110,13 @@ class LoginActivity : AppCompatActivity() {
             if (functionalities.checkConnection(connectivityManager)) {
                 socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
-                changePassword(userLogin)
+                changeForgottenPassword(userLogin)
 
                 val senderEmail = "elorclass@gmail.com"
                 val senderPassword = "apld msns reek cocx"
-                val recipientEmail = "ugaitz.corderosa@elorrieta-errekamari.com"
+                val recipientEmail = UserSession.fetchUser()?.email.toString()
                 val subject = "asunto"
-                val message = "mensaje"
+                val message = UserSession.fetchUser()?.password.toString()
 
                 SendEmailTask(
                     senderEmail,
@@ -157,7 +157,7 @@ class LoginActivity : AppCompatActivity() {
         socketClient?.emit("onLogin", message)
     }
 
-    fun changePassword(dni: String) {
+    fun changeForgottenPassword(dni: String) {
 
         var newUser = User();
         newUser.dni = dni;
@@ -166,7 +166,7 @@ class LoginActivity : AppCompatActivity() {
         password = randomPassword
         val message = this.gson.toJson(newUser);
 
-        socketClient?.emit("onPasswordChange", message)
+        socketClient?.emit("onForgottenPasswordChange", message)
     }
 
     fun setLocale(language: String) {
