@@ -25,9 +25,6 @@ import com.example.elorclass.functionalities.SendEmailTask
 import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
 import java.util.Locale
-import jakarta.mail.*
-import jakarta.mail.internet.*
-import java.util.Properties
 
 class LoginActivity : AppCompatActivity() {
 
@@ -87,8 +84,6 @@ class LoginActivity : AppCompatActivity() {
             cbRememberMe.isChecked = true
         }
 
-        val user = actvUser
-
 
         buttonLogin.setOnClickListener {
 
@@ -111,21 +106,6 @@ class LoginActivity : AppCompatActivity() {
                 socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
                 changeForgottenPassword(userLogin)
-
-                val senderEmail = "elorclass@gmail.com"
-                val senderPassword = "apld msns reek cocx"
-                val recipientEmail = UserSession.fetchUser()?.email.toString()
-                val subject = "asunto"
-                val message = UserSession.fetchUser()?.password.toString()
-
-                SendEmailTask(
-                    senderEmail,
-                    senderPassword,
-                    recipientEmail,
-                    subject,
-                    message
-                ).execute()
-
             }
         }
     }
@@ -167,6 +147,20 @@ class LoginActivity : AppCompatActivity() {
         val message = this.gson.toJson(newUser);
 
         socketClient?.emit("onForgottenPasswordChange", message)
+
+        val senderEmail = "elorclass@gmail.com"
+        val senderPassword = "apld msns reek cocx"
+        val recipientEmail = UserSession.fetchUser()?.email.toString()
+        val subject = "asunto"
+        val messageToSend = "Tu nueva contraseña es: \n $randomPassword"
+
+        SendEmailTask(
+            senderEmail,
+            senderPassword,
+            recipientEmail,
+            subject,
+            messageToSend
+        ).execute()
     }
 
     fun setLocale(language: String) {
@@ -211,7 +205,7 @@ class LoginActivity : AppCompatActivity() {
         val senderEmail = "elorclass@gmail.com"
         val senderPassword = "apld msns reek cocx"
         val recipientEmail = user.email.toString()
-        val subject = "asunto"
+        val subject = "Nueva contraseña"
         val message = password.toString()
 
         SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
@@ -220,7 +214,7 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginSuccess(user: User) {
         val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
-        if (cbRememberMeTest!!.isChecked) {
+        if (cbRememberMeTest.isChecked) {
             val rememberMeUser = user.dni?.let {
                 password?.let { it2 ->
                     RememberMeDB(
@@ -275,5 +269,13 @@ class LoginActivity : AppCompatActivity() {
 
     fun loginFailed(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    fun changeForgottenPasswordSuccess() {
+        Toast.makeText(this, "Revise su correo", Toast.LENGTH_LONG).show()
+    }
+
+    fun changeForgottenPasswordFailed(){
+        Toast.makeText(this, "Ha habido un error", Toast.LENGTH_LONG).show()
     }
 }

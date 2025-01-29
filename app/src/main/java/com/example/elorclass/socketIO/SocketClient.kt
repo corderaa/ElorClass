@@ -57,7 +57,7 @@ class SocketClient(private val activity: LoginActivity) {
             }
         }
 
-        socket.on("onForgottenPasswordChange"){ args ->
+        socket.on("onForgottenPasswordChangeAnswer"){ args ->
             Log.d("forgotten Password", "forgotten Password")
             try {
                 val response = JSONObject(args[0] as String)
@@ -66,12 +66,12 @@ class SocketClient(private val activity: LoginActivity) {
                     if (!response.has("code") || !response.get("code").equals(500)) {
                         val user: User = gson.fromJson(response.toString(), User::class.java)
                         Log.d(tag, "res:")
-                        activity.loginSuccess(user)
+                        activity.changeForgottenPasswordSuccess()
 
                         Log.d(tag, "Answer to Login: $user")
 
                     } else {
-                        activity.loginFailed(response.getString("msg"))
+                        activity.changeForgottenPasswordFailed()
                     }
                 }
             } catch (e: Exception) {
