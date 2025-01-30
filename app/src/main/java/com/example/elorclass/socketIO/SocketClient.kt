@@ -66,6 +66,7 @@ class SocketClient(private val activity: LoginActivity) {
                     if (!response.has("code") || !response.get("code").equals(500)) {
                         val user: User = gson.fromJson(response.toString(), User::class.java)
                         Log.d(tag, "res:")
+                        UserSession.setUserSession(user)
                         activity.changeForgottenPasswordSuccess()
 
                         Log.d(tag, "Answer to Login: $user")

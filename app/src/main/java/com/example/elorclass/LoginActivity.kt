@@ -29,16 +29,16 @@ import java.util.Locale
 class LoginActivity : AppCompatActivity() {
 
     private var socketClient: SocketClient? = null
-    val gson = Gson()
-    var cbRememberMe: CheckBox? = null;
-    var actvUser: AutoCompleteTextView? = null;
-    var etPassword: EditText? = null;
-    var users: List<RememberMeDB>? = null;
-    var password: String? = null;
-    val functionalities = Functionalities()
+    private val gson = Gson()
+    private var actvUser: AutoCompleteTextView? = null
+    private var etPassword: EditText? = null
+    private var users: List<RememberMeDB>? = null
+    private var password: String? = null
+    private val functionalities = Functionalities()
 
 
-    lateinit var db: AppDatabase;
+    private lateinit var db: AppDatabase
+    private lateinit var randomPassword:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,23 +128,23 @@ class LoginActivity : AppCompatActivity() {
 
     fun login(dni: String, password: String) {
 
-        var newUser = User();
-        newUser.dni = dni;
-        newUser.password = password;
+        val newUser = User()
+        newUser.dni = dni
+        newUser.password = password
 
-        val message = this.gson.toJson(newUser);
+        val message = this.gson.toJson(newUser)
 
         socketClient?.emit("onLogin", message)
     }
 
     fun changeForgottenPassword(dni: String) {
 
-        var newUser = User();
-        newUser.dni = dni;
-        val randomPassword = functionalities.generateRandomPassword(10)
+        val newUser = User()
+        newUser.dni = dni
+        randomPassword = functionalities.generateRandomPassword(10)
         newUser.password = randomPassword
         password = randomPassword
-        val message = this.gson.toJson(newUser);
+        val message = this.gson.toJson(newUser)
 
         socketClient?.emit("onForgottenPasswordChange", message)
 
@@ -200,18 +200,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun passwordChangedSuccess(user:User){
-
-        val senderEmail = "elorclass@gmail.com"
-        val senderPassword = "apld msns reek cocx"
-        val recipientEmail = user.email.toString()
-        val subject = "Nueva contraseña"
-        val message = password.toString()
-
-        SendEmailTask(senderEmail, senderPassword, recipientEmail, subject, message).execute()
-        password = null
-    }
-
     fun loginSuccess(user: User) {
         val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
         if (cbRememberMeTest.isChecked) {
@@ -225,7 +213,7 @@ class LoginActivity : AppCompatActivity() {
             }
             val userToDelete = users?.find { user.dni.equals(it.userLogin, ignoreCase = true) }
             if (userToDelete != null) {
-                db?.rememberMeDao()?.delete(userToDelete)
+                db.rememberMeDao().delete(userToDelete)
 
             } else {
                 Toast.makeText(
@@ -237,11 +225,11 @@ class LoginActivity : AppCompatActivity() {
             }
             try {
                 Log.d("d", rememberMeUser?.userLogin.toString())
-                db?.rememberMeDao()?.insertAll(rememberMeUser!!)
+                db.rememberMeDao().insertAll(rememberMeUser!!)
             } catch (e: Exception) {
                 e.message
                 Log.e("Database Error", e.toString())
-            };
+            }
             val dbPreferences = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "AppDatabase"
@@ -273,6 +261,19 @@ class LoginActivity : AppCompatActivity() {
 
     fun changeForgottenPasswordSuccess() {
         Toast.makeText(this, "Revise su correo", Toast.LENGTH_LONG).show()
+        val senderEmail = "elorclass@gmail.com"
+        val senderPassword = "apld msns reek cocx"
+        val recipientEmail = UserSession.fetchUser()?.email.toString()
+        val subject = "asunto"
+        val messageToSend = "Tu nueva contraseña es: \n $randomPassword"
+
+        SendEmailTask(
+            senderEmail,
+            senderPassword,
+            recipientEmail,
+            subject,
+            messageToSend
+        ).execute()
     }
 
     fun changeForgottenPasswordFailed(){
