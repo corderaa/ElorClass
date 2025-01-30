@@ -18,7 +18,7 @@ data class User(
     var password: String?= null,
     val rememberToken: String?= null,
     val schoolyear: Int?= null,
-    val dual: Boolean?= null,
+    val dualStudies: Boolean?= null,
     val registered: Boolean?= null,
     val createdAt: Timestamp?= null,
     val updatedAt: Timestamp?= null

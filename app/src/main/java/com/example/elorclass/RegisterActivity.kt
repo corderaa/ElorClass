@@ -17,7 +17,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.transition.Visibility
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
@@ -182,20 +181,28 @@ class RegisterActivity : AppCompatActivity() {
     ) {
         val user = UserSession.fetchUser()
         Log.d("UserSession", "UserSession " + user)
-        etName?.setText(user?.name.toString())
-        etSurname?.setText(user?.lastNames.toString())
-        etId?.setText(user?.dni.toString())
-        etAdress?.setText(user?.address.toString())
-        etFirstTelephone?.setText(user?.phone.toString())
-        etSecondTelephone?.setText(user?.phone2.toString())
-        etMail?.setText(user?.email.toString())
-        etStudies?.setText(user?.studies.toString())
+        if (user?.name != null)
+            etName?.setText(user.name)
+        if (user?.lastNames != null)
+            etSurname?.setText(user.lastNames)
+        if (user?.dni != null)
+            etId?.setText(user.dni)
+        if (user?.address != null)
+            etAdress?.setText(user.address)
+        if (user?.phone != null)
+            etFirstTelephone?.setText(user.phone)
+        if (user?.phone2 != null)
+            etSecondTelephone?.setText(user.phone2)
+        if (user?.email != null)
+            etMail?.setText(user.email)
+        if (user?.studies != null)
+            etStudies?.setText(user.studies)
         val year = user?.schoolyear
         if (year == 1)
             etYear?.setText(getString(R.string.first))
         else
             etYear?.setText(getString(R.string.second))
-        if (UserSession.fetchUser()?.dual == true) {
+        if (UserSession.fetchUser()?.dualStudies == true) {
             etDual?.setText(getString(R.string.dual_studies))
         } else
             etDual?.setText(getString(R.string.no_dual_studies))

@@ -41,7 +41,7 @@ class Functionalities {
     }
 
     fun generateRandomPassword(length: Int): String {
-        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+"
+        val characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
         val secureRandom = SecureRandom()
         val password = StringBuilder()
 

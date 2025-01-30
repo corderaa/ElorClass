@@ -39,6 +39,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
     private lateinit var randomPassword:String
+    private lateinit var cbRememberMeTest: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
         val buttonForgotten: Button = findViewById(R.id.buttonForgotten)
         val actvUser: AutoCompleteTextView = findViewById(R.id.autoCompleteTextViewUser)
         val etPassword: EditText = findViewById(R.id.editTextPassword)
-        val cbRememberMe: CheckBox = findViewById(R.id.checkBoxRememberMe)
+        cbRememberMeTest = findViewById(R.id.checkBoxRememberMe)
 
         socketClient = SocketClient(this)
 
@@ -81,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
                 etPassword.setText(usersPasswords[usersNames.indexOf(actvUser.text.toString())])
             }
 
-            cbRememberMe.isChecked = true
+            cbRememberMeTest.isChecked = true
         }
 
 
@@ -190,18 +191,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun userRegistered(user: User) {
-        if (user.registered == true) {
-            loginSuccess(user)
-        } else {
-
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    fun loginSuccess(user: User) {
-        val cbRememberMeTest: CheckBox = findViewById(R.id.checkBoxRememberMe)
         if (cbRememberMeTest.isChecked) {
             val rememberMeUser = user.dni?.let {
                 password?.let { it2 ->
@@ -225,6 +214,48 @@ class LoginActivity : AppCompatActivity() {
             }
             try {
                 Log.d("d", rememberMeUser?.userLogin.toString())
+                Log.d("d", rememberMeUser?.password.toString())
+                db.rememberMeDao().insertAll(rememberMeUser!!)
+            } catch (e: Exception) {
+                e.message
+                Log.e("Database Error", e.toString())
+            }
+        }
+        if (user.registered == true) {
+            loginSuccess(user)
+        } else {
+
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    fun loginSuccess(user: User) {
+        if (cbRememberMeTest.isChecked) {
+            val rememberMeUser = user.dni?.let {
+                password?.let { it2 ->
+                    RememberMeDB(
+                        userLogin = it,
+                        password = it2
+                    )
+                }
+            }
+            val userToDelete = users?.find { user.dni.equals(it.userLogin, ignoreCase = true) }
+            if (userToDelete != null) {
+                db.rememberMeDao().delete(userToDelete)
+
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.remembered_user),
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
+            try {
+                Log.d("d", rememberMeUser?.userLogin.toString())
+                Log.d("d", rememberMeUser?.password.toString())
                 db.rememberMeDao().insertAll(rememberMeUser!!)
             } catch (e: Exception) {
                 e.message
