@@ -5,13 +5,13 @@ import java.sql.Timestamp
 data class User(
     val id: Long?= null,
     val userTypes: UserTypes? = null,
-    val name: String? = null,
-    val lastNames: String?= null,
+    var name: String? = null,
+    var lastNames: String?= null,
     var dni: String? = null,
-    val address: String?= null,
+    var address: String?= null,
     val photo: String?= null,
-    val phone: String?= null,
-    val phone2: String?= null,
+    var phone: String?= null,
+    var phone2: String?= null,
     val email: String?= null,
     val emailVerifiedAt: Timestamp?= null,
     val studies: String?= null,
@@ -19,7 +19,7 @@ data class User(
     val rememberToken: String?= null,
     val schoolyear: Int?= null,
     val dualStudies: Boolean?= null,
-    val registered: Boolean?= null,
+    var registered: Boolean?= null,
     val createdAt: Timestamp?= null,
     val updatedAt: Timestamp?= null
 )

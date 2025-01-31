@@ -310,4 +310,9 @@ class LoginActivity : AppCompatActivity() {
     fun changeForgottenPasswordFailed(){
         Toast.makeText(this, "Ha habido un error", Toast.LENGTH_LONG).show()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        socketClient?.disconnect()
+    }
 }

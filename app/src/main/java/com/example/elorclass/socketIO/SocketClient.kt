@@ -103,6 +103,11 @@ class SocketClient(private val activity: LoginActivity) {
         Log.d(tag, "Connecting to the server")
     }
 
+    fun disconnect() {
+        socket.disconnect()
+        Log.d(tag, "Disconnecting to the server")
+    }
+
     fun emit(value: Any, jsonObject: String) {
         socket.emit(value.toString(), jsonObject)
     }

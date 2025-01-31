@@ -20,9 +20,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
+import com.example.elorclass.socketIO.SocketClient
+import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 
 class RegisterActivity : AppCompatActivity() {
+
+    private var socketClient: SocketClient? = null
+    private val gson = Gson()
 
     lateinit var etName: EditText
     lateinit var etSurname: EditText
@@ -37,6 +42,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etPassword: EditText
     lateinit var etConfirmPassword: EditText
     val user = UserSession.fetchUser()
+    var isIncomplete = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,10 +126,19 @@ class RegisterActivity : AppCompatActivity() {
                             ).show()
                         } else {
                             // Crear usuario o coger usuario
-                            val testUser: User = User()
+                            val registeredUser = User()
+                            registeredUser.registered = true
+                            registeredUser.name = name
+                            registeredUser.password = password
+                            registeredUser.lastNames = surname
+                            registeredUser.dni = id
+                            registeredUser.address = adress
+                            registeredUser.phone = firstTelephone
+                            registeredUser.phone2 = secondTelephone
+
 
                             //ENVIAR "user" A LA BASE DE DATOS
-                            UserSession.setUserSession(testUser)
+                            UserSession.setUserSession(registeredUser)
 
 
                             val intent = Intent(this, LoginActivity::class.java)
@@ -183,29 +198,57 @@ class RegisterActivity : AppCompatActivity() {
         Log.d("UserSession", "UserSession " + user)
         if (user?.name != null)
             etName?.setText(user.name)
+        else
+            isIncomplete = true
         if (user?.lastNames != null)
             etSurname?.setText(user.lastNames)
+        else
+            isIncomplete = true
         if (user?.dni != null)
             etId?.setText(user.dni)
+        else
+            isIncomplete = true
         if (user?.address != null)
             etAdress?.setText(user.address)
+        else
+            isIncomplete = true
         if (user?.phone != null)
             etFirstTelephone?.setText(user.phone)
+        else
+            isIncomplete = true
         if (user?.phone2 != null)
             etSecondTelephone?.setText(user.phone2)
+        else
+            isIncomplete = true
         if (user?.email != null)
             etMail?.setText(user.email)
+        else
+            isIncomplete = true
         if (user?.studies != null)
             etStudies?.setText(user.studies)
-        val year = user?.schoolyear
-        if (year == 1)
-            etYear?.setText(getString(R.string.first))
         else
-            etYear?.setText(getString(R.string.second))
-        if (UserSession.fetchUser()?.dualStudies == true) {
-            etDual?.setText(getString(R.string.dual_studies))
-        } else
-            etDual?.setText(getString(R.string.no_dual_studies))
+            isIncomplete = true
+        val year = user?.schoolyear
+        if (year == null)
+            isIncomplete = true
+        else {
+            if (year == 1)
+                etYear?.setText(getString(R.string.first))
+            else
+                etYear?.setText(getString(R.string.second))
+            if (user.dualStudies == null)
+                isIncomplete = true
+            else {
+                if (user.dualStudies == true) {
+                    etDual?.setText(getString(R.string.dual_studies))
+                } else
+                    etDual?.setText(getString(R.string.no_dual_studies))
+            }
+        }
+        if (isIncomplete)
+            Toast.makeText(
+                this, "Datos incompletos", Toast.LENGTH_SHORT
+            ).show()
     }
 
     private fun clearFields() {
