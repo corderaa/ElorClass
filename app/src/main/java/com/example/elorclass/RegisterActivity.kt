@@ -3,6 +3,7 @@ package com.example.elorclass
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.util.Base64
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.provider.MediaStore
@@ -21,6 +22,7 @@ import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.socketIO.SocketClient
+import com.example.elorclass.socketIO.config.Events
 import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 
@@ -41,8 +43,10 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etMail: EditText
     lateinit var etPassword: EditText
     lateinit var etConfirmPassword: EditText
+    lateinit var imageView: ImageView
     val user = UserSession.fetchUser()
     var isIncomplete = false
+    var imageBytes: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +61,6 @@ class RegisterActivity : AppCompatActivity() {
         val years = ArrayList<String>()
         years.add(getString(R.string.first))
         years.add(getString(R.string.second))
-        val selectedOptionInteger = 0
         etName = findViewById<EditText>(R.id.editTextName)
         etSurname = findViewById<EditText>(R.id.editTextSurname)
         etId = findViewById<EditText>(R.id.editTextID)
@@ -70,15 +73,17 @@ class RegisterActivity : AppCompatActivity() {
         etDual = findViewById<EditText>(R.id.editTextDual)
         etPassword = findViewById<EditText>(R.id.editTextPassword)
         etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
+        imageView = findViewById<ImageView>(R.id.imageView2)
+
+        socketClient = SocketClient(null, this)
 
         val startForResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 if (result.resultCode == Activity.RESULT_OK) {
                     val intent = result.data
                     val imageBitmap = intent?.extras?.get("data") as Bitmap
-                    val imageView = findViewById<ImageView>(R.id.imageView2)
                     imageView.setImageBitmap(imageBitmap)
-                    val imageBytes = bitmapToByteArray(imageBitmap)
+                    imageBytes = bitmapToByteArray(imageBitmap)
                 }
             }
 
@@ -106,6 +111,7 @@ class RegisterActivity : AppCompatActivity() {
             etDual.visibility = View.GONE
         }
         buttonRegister.setOnClickListener {
+            socketClient!!.connect()
             if (functionalities.checkConnection(connectivityManager)) {
                 val password = etPassword.text.toString()
                 val confirmPassword = etConfirmPassword.text.toString()
@@ -135,18 +141,12 @@ class RegisterActivity : AppCompatActivity() {
                             registeredUser.address = adress
                             registeredUser.phone = firstTelephone
                             registeredUser.phone2 = secondTelephone
-
+                            if (imageBytes != null)
+                                registeredUser.photo = byteArrayToBase64(imageBytes!!)
 
                             //ENVIAR "user" A LA BASE DE DATOS
                             UserSession.setUserSession(registeredUser)
-
-
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                            Toast.makeText(
-                                this, getString(R.string.user_registered), Toast.LENGTH_SHORT
-                            ).show()
+                            socketClient?.emit("onRegister", this.gson.toJson(registeredUser))
                         }
                     } else {
                         Toast.makeText(
@@ -226,9 +226,7 @@ class RegisterActivity : AppCompatActivity() {
             isIncomplete = true
         if (user?.studies != null)
             etStudies?.setText(user.studies)
-        else
-            isIncomplete = true
-        val year = user?.schoolyear
+        val year = user?.schoolYear
         if (year == null)
             isIncomplete = true
         else {
@@ -245,10 +243,12 @@ class RegisterActivity : AppCompatActivity() {
                     etDual?.setText(getString(R.string.no_dual_studies))
             }
         }
-        if (isIncomplete)
+        if (isIncomplete) {
             Toast.makeText(
                 this, "Datos incompletos", Toast.LENGTH_SHORT
             ).show()
+            isIncomplete = !isIncomplete
+        }
     }
 
     private fun clearFields() {
@@ -267,5 +267,24 @@ class RegisterActivity : AppCompatActivity() {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
         return byteArrayOutputStream.toByteArray()
+    }
+
+    fun byteArrayToBase64(byteArray: ByteArray): String {
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+    fun registerSuccess(){
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
+        Toast.makeText(
+            this, "hola", Toast.LENGTH_SHORT
+        ).show()
+    }
+    fun registerFail(){
+        Toast.makeText(this, "Error en el registro", Toast.LENGTH_LONG).show()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        socketClient?.disconnect()
     }
 }

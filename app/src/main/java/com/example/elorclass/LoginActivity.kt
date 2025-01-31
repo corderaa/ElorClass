@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         cbRememberMeTest = findViewById(R.id.checkBoxRememberMe)
 
-        socketClient = SocketClient(this)
+        socketClient = SocketClient(this, null)
 
 
 

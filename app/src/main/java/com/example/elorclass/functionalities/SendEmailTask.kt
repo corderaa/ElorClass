@@ -16,24 +16,23 @@ class SendEmailTask(private val senderEmail: String, private val senderPassword:
             put("mail.smtp.port", "465")
         }
 
-        val session = Session.getDefaultInstance(properties, object : jakarta.mail.Authenticator() {
+        val session = Session.getDefaultInstance(properties, object : Authenticator() {
             override fun getPasswordAuthentication(): PasswordAuthentication {
                 return PasswordAuthentication(senderEmail, senderPassword)
             }
         })
 
         try {
-            // Crear el MimeMessage
+
             val mimeMessage = MimeMessage(session)
             mimeMessage.setFrom(InternetAddress(senderEmail))
             mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(recipientEmail))
             mimeMessage.subject = subject
             mimeMessage.setText(message)
 
-            // Enviar el mensaje
             Transport.send(mimeMessage)
         } catch (e: MessagingException) {
-            e.printStackTrace() // Maneja el error de manera adecuada
+            e.printStackTrace()
         }
         return null
     }
