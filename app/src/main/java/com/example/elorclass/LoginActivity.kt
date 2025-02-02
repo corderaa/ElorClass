@@ -13,7 +13,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
 import com.example.elorclass.data.User
@@ -26,7 +25,7 @@ import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
 import java.util.Locale
 
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private var socketClient: SocketClient? = null
     private val gson = Gson()
@@ -311,8 +310,21 @@ class LoginActivity : AppCompatActivity() {
         Toast.makeText(this, "Ha habido un error", Toast.LENGTH_LONG).show()
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (socketClient != null && socketClient!!.isConnected())
+        socketClient?.disconnect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (socketClient != null && socketClient!!.isConnected())
+        socketClient?.disconnect()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+        if (socketClient != null && socketClient!!.isConnected())
         socketClient?.disconnect()
     }
 }

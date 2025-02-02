@@ -20,7 +20,7 @@ import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.PreferencesDB
 import java.util.Locale
 
-class ProfileActivity : AppCompatActivity() {
+class ProfileActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

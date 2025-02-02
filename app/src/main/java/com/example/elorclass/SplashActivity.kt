@@ -6,7 +6,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 
-class SplashActivity: AppCompatActivity() {
+class SplashActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +19,7 @@ class SplashActivity: AppCompatActivity() {
             .into(splashImage)
 
         // Esperar unos segundos antes de abrir la MainActivity
-        val splashScreenDuration: Long = 5000 // Duración del splash screen (3 segundos)
+        val splashScreenDuration: Long = 3000 // Duración del splash screen (3 segundos)
         android.os.Handler().postDelayed({
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

@@ -14,7 +14,7 @@ import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import java.util.Locale
 
-class MainPanelActivity : AppCompatActivity() {
+class MainPanelActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

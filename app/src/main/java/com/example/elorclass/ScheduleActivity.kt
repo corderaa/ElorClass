@@ -12,7 +12,7 @@ import com.example.elorclass.data.ScheduleItem
 import com.example.elorclass.data.ScheduleItemArrayAdapter
 import com.example.elorclass.functionalities.Functionalities
 
-class ScheduleActivity : AppCompatActivity() {
+class ScheduleActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

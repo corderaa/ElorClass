@@ -132,4 +132,8 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
         socket.emit(value.toString(), jsonObject)
     }
 
+    fun isConnected(): Boolean{
+        return socket.connected()
+    }
+
 }

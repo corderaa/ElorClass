@@ -1,7 +1,9 @@
 package com.example.elorclass
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.util.Base64
 import android.net.ConnectivityManager
@@ -18,15 +20,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.socketIO.SocketClient
-import com.example.elorclass.socketIO.config.Events
 import com.google.gson.Gson
 import java.io.ByteArrayOutputStream
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
     private var socketClient: SocketClient? = null
     private val gson = Gson()
@@ -76,16 +78,6 @@ class RegisterActivity : AppCompatActivity() {
         imageView = findViewById<ImageView>(R.id.imageView2)
 
         socketClient = SocketClient(null, this)
-
-        val startForResult =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val intent = result.data
-                    val imageBitmap = intent?.extras?.get("data") as Bitmap
-                    imageView.setImageBitmap(imageBitmap)
-                    imageBytes = bitmapToByteArray(imageBitmap)
-                }
-            }
 
         try {
             autoCompleteData(
@@ -178,9 +170,34 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         buttonCamera.setOnClickListener {
-            startForResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+                startForResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            } else {
+                // Solicitar permiso
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
         }
     }
+
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                val imageBitmap = intent?.extras?.get("data") as Bitmap
+                imageView.setImageBitmap(imageBitmap)
+                imageBytes = bitmapToByteArray(imageBitmap)
+            }
+        }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                startForResult.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
+            } else {
+                Toast.makeText(this, "Permiso de cámara denegado", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     private fun autoCompleteData(
         etName: EditText?,
