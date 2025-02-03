@@ -11,10 +11,14 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import com.example.elorclass.data.ScheduleItem
 import com.example.elorclass.data.ScheduleItemArrayAdapter
+import com.example.elorclass.data.User
+import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.socketIO.SocketClient
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class ScheduleActivity : BaseActivity() {
     private var socketClient: SocketClient? = null
@@ -37,12 +41,14 @@ class ScheduleActivity : BaseActivity() {
         socketClient = SocketClient(null, null, this)
         socketClient!!.connect()
 
-        val message = JSONObject().apply {
-            put("test", "test")
-        }.toString()
+
 
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+
+            val message = JSONObject().apply {
+                put("dni", UserSession.fetchUser()?.dni)
+            }.toString()
 
             socketClient?.emit("onRequestSchedulle", message)
             val month = month + 1
@@ -70,13 +76,20 @@ class ScheduleActivity : BaseActivity() {
         for (i in 0 until schedules.length()) {
             var schedule = JSONObject(schedules.get(i).toString())
             var hour = schedule.get("hour")
-            var day = schedule.get("day")
+            val dayString = schedule.getString("day")
+            val sdfInput = SimpleDateFormat("MMM d, yyyy")
+            val day = sdfInput.parse(dayString)
+            val sdf = SimpleDateFormat("d/M/yyyy")
+            val formattedDate = sdf.format(day)
+
             var subject = schedule.get("subjects") as JSONObject
             var subjectName = subject.get("name")
 
-            if (currentSelectedDate== day){
+
+
+            if (currentSelectedDate == formattedDate) {
                 ret.add(ScheduleItem(hour.toString(), subjectName.toString()))
-            } else{
+            } else {
                 Toast.makeText(this, "No hay horarios disponibles", Toast.LENGTH_SHORT).show()
             }
 
@@ -88,19 +101,23 @@ class ScheduleActivity : BaseActivity() {
 
         return ret;
     }
+
     fun updateSchedule(schedules: JSONArray) {
         scheduleItems.clear()
         // COJER SCHEDULES
         scheduleItems = takeSchedule(schedules)
-        if (!scheduleItems.isEmpty()){
-            val scheduleAdapter = ScheduleItemArrayAdapter(this, R.layout.schedule_item, scheduleItems)
+        if (!scheduleItems.isEmpty()) {
+            val scheduleAdapter =
+                ScheduleItemArrayAdapter(this, R.layout.schedule_item, scheduleItems)
             myList?.adapter = scheduleAdapter
             (scheduleAdapter).notifyDataSetChanged()
         } else {
             Toast.makeText(this, "No hay horarios disponibles", Toast.LENGTH_SHORT).show()
         }
     }
+
     fun schedulleFailed() {
         Toast.makeText(this, "Error al cargar", Toast.LENGTH_SHORT).show()
     }
+
 }

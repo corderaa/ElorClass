@@ -9,8 +9,9 @@ import android.widget.TextView
 import com.example.elorclass.R
 
 class ScheduleItem(
-    var scheduleTask: String,
-    var scheduleHour: String
+
+    var scheduleHour: String,
+    var scheduleTask: String
 )
 
 class ScheduleItemArrayAdapter(

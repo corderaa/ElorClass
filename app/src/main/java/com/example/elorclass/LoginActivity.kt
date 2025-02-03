@@ -58,7 +58,7 @@ class LoginActivity : BaseActivity() {
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         cbRememberMeTest = findViewById(R.id.checkBoxRememberMe)
 
-        socketClient = SocketClient(this, null)
+        socketClient = SocketClient(this, null, null)
 
 
 
