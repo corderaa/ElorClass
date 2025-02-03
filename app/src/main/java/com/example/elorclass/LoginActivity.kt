@@ -312,19 +312,22 @@ class LoginActivity : BaseActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (socketClient != null && socketClient!!.isConnected())
-        socketClient?.disconnect()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        if (socketClient != null && socketClient!!.isConnected())
-        socketClient?.disconnect()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (socketClient != null && socketClient!!.isConnected())
-        socketClient?.disconnect()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 }
