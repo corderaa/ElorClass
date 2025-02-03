@@ -11,10 +11,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 open class BaseActivity : AppCompatActivity() {
+    var lostConectivity = false
     private val networkReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent?) {
             if (!isNetworkAvailable(context)) {
                 Toast.makeText(context, "Se ha perdido la conexión a Internet", Toast.LENGTH_LONG).show()
+                lostConectivity = true
+            } else if (lostConectivity){
+                Toast.makeText(context, "Tiene conexión a Internet", Toast.LENGTH_LONG).show()
+                lostConectivity = false
             }
         }
     }
