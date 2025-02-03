@@ -9,5 +9,7 @@ enum class Events(val value: String) {
     TEST_EVENT("testEvent"),
     TEST_RESPONSE_EVENT("testEventAnswer"),
     ON_PASSWORD_CHANGE("onPasswordChange"),
-    ON_RESPONSE_PASSWORD_CHANGE("onPasswordChangeAnswer");
+    ON_RESPONSE_PASSWORD_CHANGE("onPasswordChangeAnswer"),
+    ON_REQUEST_SCHEDULLE("onRequestSchedulle"),
+    ON_RESPONSE_SCHEDULLE("onAnswerSchedulle");
 }
