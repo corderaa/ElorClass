@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Base64
 import android.net.ConnectivityManager
 import android.os.Bundle
@@ -19,10 +20,11 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.room.Room
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
+import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.socketIO.SocketClient
 import com.google.gson.Gson
@@ -49,6 +51,7 @@ class RegisterActivity : BaseActivity() {
     val user = UserSession.fetchUser()
     var isIncomplete = false
     var imageBytes: ByteArray? = null
+    private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +79,10 @@ class RegisterActivity : BaseActivity() {
         etPassword = findViewById<EditText>(R.id.editTextPassword)
         etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmPassword)
         imageView = findViewById<ImageView>(R.id.imageView2)
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "AppDatabase"
+        ).allowMainThreadQueries().build()
 
         socketClient = SocketClient(null, this)
 
@@ -90,7 +97,8 @@ class RegisterActivity : BaseActivity() {
                 etMail,
                 etStudies,
                 etYear,
-                etDual
+                etDual,
+                imageView
             )
 
         } catch (e: Exception) {
@@ -210,9 +218,12 @@ class RegisterActivity : BaseActivity() {
         etStudies: EditText?,
         etYear: EditText?,
         etDual: EditText?,
+        imageView: ImageView?,
     ) {
         val user = UserSession.fetchUser()
         Log.d("UserSession", "UserSession " + user)
+        if(user?.photo != null)
+            imageView?.setImageBitmap(byteArrayToBitmap(base64ToByteArray(user.photo!!)))
         if (user?.name != null)
             etName?.setText(user.name)
         else
@@ -289,12 +300,22 @@ class RegisterActivity : BaseActivity() {
     fun byteArrayToBase64(byteArray: ByteArray): String {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
+
+    fun base64ToByteArray(base64String: String): ByteArray {
+        return Base64.decode(base64String, Base64.DEFAULT)
+    }
+
+    fun byteArrayToBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
+
     fun registerSuccess(){
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, MainPanelActivity::class.java)
         startActivity(intent)
         finish()
         Toast.makeText(
-            this, "hola", Toast.LENGTH_SHORT
+            this, "Registrado con éxito", Toast.LENGTH_SHORT
         ).show()
     }
     fun registerFail(){

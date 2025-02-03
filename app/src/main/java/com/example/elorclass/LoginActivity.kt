@@ -105,7 +105,15 @@ class LoginActivity : BaseActivity() {
             if (functionalities.checkConnection(connectivityManager)) {
                 socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
-                changeForgottenPassword(userLogin)
+                if (userLogin.isEmpty()) {
+                    Toast.makeText(this, "Introduzca un usuario", Toast.LENGTH_SHORT).show()
+                } else {
+                    changeForgottenPassword(userLogin)
+                }
+            }else {
+                createDialog(
+                    getString(R.string.error), "No tienes conexion", true
+                )
             }
         }
     }
@@ -147,20 +155,6 @@ class LoginActivity : BaseActivity() {
         val message = this.gson.toJson(newUser)
 
         socketClient?.emit("onForgottenPasswordChange", message)
-
-        val senderEmail = "elorclass@gmail.com"
-        val senderPassword = "apld msns reek cocx"
-        val recipientEmail = UserSession.fetchUser()?.email.toString()
-        val subject = "asunto"
-        val messageToSend = "Tu nueva contraseña es: \n $randomPassword"
-
-        SendEmailTask(
-            senderEmail,
-            senderPassword,
-            recipientEmail,
-            subject,
-            messageToSend
-        ).execute()
     }
 
     fun setLocale(language: String) {
@@ -207,7 +201,7 @@ class LoginActivity : BaseActivity() {
                 Toast.makeText(
                     this,
                     getString(R.string.remembered_user),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
 
             }
@@ -306,8 +300,9 @@ class LoginActivity : BaseActivity() {
         ).execute()
     }
 
-    fun changeForgottenPasswordFailed(){
-        Toast.makeText(this, "Ha habido un error", Toast.LENGTH_LONG).show()
+    fun changeForgottenPasswordFailed(message: String){
+        Log.d("error", message)
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     override fun onPause() {

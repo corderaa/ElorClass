@@ -73,7 +73,7 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
                         Log.d(tag, "Answer to Login: $user")
 
                     } else {
-                        loginActivity.changeForgottenPasswordFailed()
+                        loginActivity.changeForgottenPasswordFailed(response.getString("msg"))
                     }
                 }
             } catch (e: Exception) {
@@ -81,12 +81,12 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
             }
         }
 
-        socket.on(Events.ON_RESPONSE_REGISTER.value) { args ->
+        socket.on("onRegisterAnswer") { args ->
             try{
                val response = JSONObject(args[0] as String)
                 Log.d(tag, "res: $response")
-                loginActivity?.runOnUiThread {
-                    if (!response.has("code") || response.get("code").equals(500)){
+                registerActivity?.runOnUiThread {
+                    if (!response.has("code") || response.get("code").equals(200)){
                         val user: User = gson.fromJson(response.toString(), User::class.java)
                         Log.d(tag, "Answer to Register: $user")
 
