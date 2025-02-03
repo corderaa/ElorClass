@@ -301,7 +301,7 @@ class LoginActivity : BaseActivity() {
     }
 
     fun changeForgottenPasswordFailed(message: String){
-        Log.d("error", message)
+        Log.d("error", "error" + message)
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
