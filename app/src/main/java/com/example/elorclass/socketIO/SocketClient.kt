@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.elorclass.LoginActivity
 import com.example.elorclass.ProfileActivity
 import com.example.elorclass.RegisterActivity
+import com.example.elorclass.ScheduleActivity
 import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.socketIO.config.Events
@@ -13,7 +14,7 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
 
-class SocketClient(private val loginActivity: LoginActivity?, private val registerActivity: RegisterActivity?, private val profileActivity: ProfileActivity?) {
+class SocketClient(private val loginActivity: LoginActivity?, private val registerActivity: RegisterActivity?, private val profileActivity: ProfileActivity?, private val scheduleActivity: ScheduleActivity?) {
 
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
@@ -117,17 +118,6 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
 
         }
 
-        socket.on("onPasswordChangeAnswer") { args ->
-            val response = JSONObject(args[0] as String)
-            Log.d(tag, "res: $response")
-            profileActivity?.runOnUiThread {
-                if (!response.has("code") || response.get("code").equals(200)){
-                    profileActivity.onProfileActivitySuccess()
-                } else {
-                    profileActivity.onProfileActivityError()
-                }
-            }
-        }
     }
 
     fun connect() {
