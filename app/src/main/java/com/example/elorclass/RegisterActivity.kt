@@ -84,7 +84,7 @@ class RegisterActivity : BaseActivity() {
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
 
-        socketClient = SocketClient(null, this)
+        socketClient = SocketClient(null, this, null)
 
         try {
             autoCompleteData(
