@@ -2,6 +2,7 @@ package com.example.elorclass.socketIO
 
 import android.util.Log
 import com.example.elorclass.LoginActivity
+import com.example.elorclass.ProfileActivity
 import com.example.elorclass.RegisterActivity
 import com.example.elorclass.ScheduleActivity
 import com.example.elorclass.data.User
@@ -11,10 +12,9 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.socket.client.IO
 import io.socket.client.Socket
-import org.json.JSONArray
 import org.json.JSONObject
 
-class SocketClient(private val loginActivity: LoginActivity?, private val registerActivity: RegisterActivity?, private val scheduleActivity: ScheduleActivity?) {
+class SocketClient(private val loginActivity: LoginActivity?, private val registerActivity: RegisterActivity?, private val profileActivity: ProfileActivity?, private val scheduleActivity: ScheduleActivity?) {
 
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
@@ -116,31 +116,6 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
                 Log.e(tag, "Error: ${e.message}")
             }
 
-
-        }
-
-        socket.on(Events.ON_RESPONSE_SCHEDULLE.value) { args ->
-            Log.d("schedulle", "schedulle")
-
-            try {
-                val response = JSONArray(args[0].toString())
-                Log.d(tag, "res: $response")
-
-                scheduleActivity?.runOnUiThread {
-                    //if (!response.has("code") || !response.get("code").equals(500)) {
-
-
-                    this.scheduleActivity.updateSchedule(response)
-
-
-
-                    //} else {
-                    //    scheduleActivity?.schedulleFailed()
-                    //}
-                }
-            } catch (e: Exception) {
-                Log.e(tag, "Error parsing response: ${e.message}")
-            }
         }
 
     }

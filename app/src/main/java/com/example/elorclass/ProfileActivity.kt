@@ -14,21 +14,29 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.room.Room
+import com.example.elorclass.data.User
 import com.example.elorclass.data.UserSession
 import com.example.elorclass.functionalities.AppDatabase
 import com.example.elorclass.functionalities.Functionalities
 import com.example.elorclass.functionalities.PreferencesDB
+import com.example.elorclass.socketIO.SocketClient
+import com.example.elorclass.socketIO.config.Events
+import com.google.gson.Gson
+import org.json.JSONObject
 import java.util.Locale
 
 class ProfileActivity : BaseActivity() {
+    private val gson = Gson()
+    private var socketClient: SocketClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.profile)
 
-        var language=""
-        var theme=""
-        val connectivityManager = getSystemService(ConnectivityManager::class.java) as ConnectivityManager
+        var language = ""
+        var theme = ""
+        val connectivityManager =
+            getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         val functionalities = Functionalities()
         val buttonChangePassword: Button = findViewById(R.id.buttonChangePassword)
         val buttonChangeLanguage: Button = findViewById(R.id.buttonChangeLanguage)
@@ -37,30 +45,30 @@ class ProfileActivity : BaseActivity() {
         val etOldPassword = findViewById<EditText>(R.id.editTextOldPassword)
         val etNewPassword = findViewById<EditText>(R.id.editTextNewPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmNewPassword)
+        socketClient = SocketClient(null, null, this)
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "AppDatabase"
         ).allowMainThreadQueries().build()
 
         buttonChangePassword.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 val oldPassword = etOldPassword.text.toString()
                 val newPassword = etNewPassword.text.toString()
                 val confirmPassword = etConfirmPassword.text.toString()
-                if(oldPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()){
-                    if(oldPassword == UserSession.fetchUser()?.password) {
-                        if (newPassword == confirmPassword) {
-                            Toast.makeText(
-                                this, getString(R.string.password_updated), Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            Toast.makeText(
-                                this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                if (oldPassword.isNotEmpty() && newPassword.isNotEmpty() && confirmPassword.isNotEmpty()) {
+                    if (newPassword == confirmPassword) {
+                        var user = UserSession.fetchUser()
+                        user?.password = newPassword
+                        var message = JSONObject()
+                        message.put("oldPassword", "${oldPassword}")
+                        message.put("dni", user?.dni)
+                        message.put("newPassword", newPassword)
+                        socketClient!!.connect()
+                        socketClient?.emit("onPasswordChange", message.toString())
                     } else {
                         Toast.makeText(
-                            this, getString(R.string.wrong_password), Toast.LENGTH_SHORT
+                            this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
@@ -76,16 +84,22 @@ class ProfileActivity : BaseActivity() {
         }
 
         buttonChangeLanguage.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 Toast.makeText(
                     this, getString(R.string.language), Toast.LENGTH_SHORT
                 ).show()
-                val languages = listOf(getString(R.string.spanish), getString(R.string.english), getString(R.string.basque), getString(R.string.portugues))
+                val languages = listOf(
+                    getString(R.string.spanish),
+                    getString(R.string.english),
+                    getString(R.string.basque),
+                    getString(R.string.portugues)
+                )
                 createDialog(languages, getString(R.string.language)) { selectedOption ->
                     language = selectedOption
                     setLocale(language)
                     val preferences =
-                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
+                        db.preferencesDao()
+                            .getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
                     if (preferences != null)
                         db.preferencesDao().changeLanguage(language, UserSession.fetchUser()?.dni!!)
                     else {
@@ -105,14 +119,16 @@ class ProfileActivity : BaseActivity() {
         }
 
         buttonChangeTheme.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 Toast.makeText(
                     this, getString(R.string.theme), Toast.LENGTH_SHORT
                 ).show()
                 val themes = listOf(getString(R.string.light), getString(R.string.dark))
-                createDialog(themes, getString(R.string.theme)){ selectedOption -> theme = selectedOption
+                createDialog(themes, getString(R.string.theme)) { selectedOption ->
+                    theme = selectedOption
                     val preferences =
-                        db.preferencesDao().getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
+                        db.preferencesDao()
+                            .getPreferenceByLogin(UserSession.fetchUser()?.dni.toString())
                     if (preferences != null)
                         db.preferencesDao().changeTheme(theme, UserSession.fetchUser()?.dni!!)
                     else {
@@ -123,7 +139,7 @@ class ProfileActivity : BaseActivity() {
                         )
                         db.preferencesDao().insertAll(user)
                     }
-                    if(selectedOption == getString(R.string.light))
+                    if (selectedOption == getString(R.string.light))
                         setAppTheme(false)
                     else
                         setAppTheme(true)
@@ -136,7 +152,7 @@ class ProfileActivity : BaseActivity() {
         }
 
         buttonGoBack.setOnClickListener {
-            if (functionalities.checkConnection(connectivityManager)){
+            if (functionalities.checkConnection(connectivityManager)) {
                 val intent = Intent(this, MainPanelActivity::class.java)
                 startActivity(intent)
                 finish()
@@ -148,7 +164,11 @@ class ProfileActivity : BaseActivity() {
         }
     }
 
-    private fun createDialog(list: List<String>, title: String, onOptionSelected: (String) -> Unit) {
+    private fun createDialog(
+        list: List<String>,
+        title: String,
+        onOptionSelected: (String) -> Unit
+    ) {
         val spinner = Spinner(this)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, list)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -167,8 +187,8 @@ class ProfileActivity : BaseActivity() {
     }
 
     private fun setLocale(language: String) {
-        var languageCode=""
-        when (language){
+        var languageCode = ""
+        when (language) {
             getString(R.string.english) -> languageCode = "en"
             getString(R.string.spanish) -> languageCode = "es"
             getString(R.string.portugues) -> languageCode = "pt"
@@ -190,5 +210,17 @@ class ProfileActivity : BaseActivity() {
             AppCompatDelegate.MODE_NIGHT_NO
         }
         AppCompatDelegate.setDefaultNightMode(mode)
+    }
+
+    fun onProfileActivitySuccess(){
+        Toast.makeText(
+            this, getString(R.string.password_updated), Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    fun onProfileActivityError(){
+        Toast.makeText(
+            this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
+        ).show()
     }
 }
