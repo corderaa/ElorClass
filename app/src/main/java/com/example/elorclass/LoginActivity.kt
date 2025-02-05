@@ -58,8 +58,7 @@ class LoginActivity : BaseActivity() {
         val etPassword: EditText = findViewById(R.id.editTextPassword)
         cbRememberMeTest = findViewById(R.id.checkBoxRememberMe)
 
-        socketClient = SocketClient(this, null)
-        socketClient!!.connect()
+        socketClient = SocketClient(this, null, null, null)
 
 
 
@@ -89,9 +88,11 @@ class LoginActivity : BaseActivity() {
         buttonLogin.setOnClickListener {
 
             if (functionalities.checkConnection(connectivityManager)) {
+                socketClient!!.connect()
                 val userId = actvUser.text.toString()
                 password = etPassword.text.toString()
                 login(userId, password!!)
+
             } else {
                 createDialog(
                     getString(R.string.error), "No tienes conexion", true
@@ -102,6 +103,7 @@ class LoginActivity : BaseActivity() {
 
         buttonForgotten.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)) {
+                socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
                 if (userLogin.isEmpty()) {
                     Toast.makeText(this, "Introduzca un usuario", Toast.LENGTH_SHORT).show()
