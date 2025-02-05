@@ -59,6 +59,7 @@ class LoginActivity : BaseActivity() {
         cbRememberMeTest = findViewById(R.id.checkBoxRememberMe)
 
         socketClient = SocketClient(this, null)
+        socketClient!!.connect()
 
 
 
@@ -88,11 +89,9 @@ class LoginActivity : BaseActivity() {
         buttonLogin.setOnClickListener {
 
             if (functionalities.checkConnection(connectivityManager)) {
-                socketClient!!.connect()
                 val userId = actvUser.text.toString()
                 password = etPassword.text.toString()
                 login(userId, password!!)
-
             } else {
                 createDialog(
                     getString(R.string.error), "No tienes conexion", true
@@ -103,7 +102,6 @@ class LoginActivity : BaseActivity() {
 
         buttonForgotten.setOnClickListener {
             if (functionalities.checkConnection(connectivityManager)) {
-                socketClient!!.connect()
                 val userLogin = actvUser.text.toString()
                 if (userLogin.isEmpty()) {
                     Toast.makeText(this, "Introduzca un usuario", Toast.LENGTH_SHORT).show()
@@ -288,8 +286,8 @@ class LoginActivity : BaseActivity() {
         val senderEmail = "elorclass@gmail.com"
         val senderPassword = "apld msns reek cocx"
         val recipientEmail = UserSession.fetchUser()?.email.toString()
-        val subject = "asunto"
-        val messageToSend = "Tu nueva contraseña es: \n $randomPassword"
+        val subject = "Cambio de contraseña"
+        val messageToSend = "Tu nueva contraseña es: \n $password"
 
         SendEmailTask(
             senderEmail,
