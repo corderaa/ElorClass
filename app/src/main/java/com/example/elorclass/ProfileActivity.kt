@@ -45,7 +45,7 @@ class ProfileActivity : BaseActivity() {
         val etOldPassword = findViewById<EditText>(R.id.editTextOldPassword)
         val etNewPassword = findViewById<EditText>(R.id.editTextNewPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.editTextConfirmNewPassword)
-        socketClient = SocketClient(null, null, this)
+        socketClient = SocketClient(null, null, this, null)
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "AppDatabase"
