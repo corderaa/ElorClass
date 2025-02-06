@@ -12,6 +12,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.socket.client.IO
 import io.socket.client.Socket
+import org.json.JSONArray
 import org.json.JSONObject
 
 class SocketClient(private val loginActivity: LoginActivity?, private val registerActivity: RegisterActivity?, private val profileActivity: ProfileActivity?, private val scheduleActivity: ScheduleActivity?) {
@@ -19,11 +20,7 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
     private val ipPort = "http://10.0.2.2:4000"
     private val socket: Socket = IO.socket(ipPort)
     private val gson = Gson()
-
-    //Log info
     private var tag = "socket.io"
-
-    // Add all the events
 
     init {
         socket.on(Socket.EVENT_CONNECT) {
@@ -92,9 +89,9 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
                         val user: User = gson.fromJson(response.toString(), User::class.java)
                         Log.d(tag, "Answer to Register: $user")
 
-                        registerActivity?.registerSuccess()
+                        registerActivity.registerSuccess()
                     } else {
-                        registerActivity?.registerFail()
+                        registerActivity.registerFail()
                     }
                 }
             } catch (e:Exception){
@@ -116,6 +113,31 @@ class SocketClient(private val loginActivity: LoginActivity?, private val regist
                 Log.e(tag, "Error: ${e.message}")
             }
 
+        }
+
+        socket.on("onPasswordChangeAnswer") { args ->
+            val response = JSONObject(args[0] as String)
+            Log.d(tag, "res: $response")
+            profileActivity?.runOnUiThread {
+                if (!response.has("code") || response.get("code").equals(200)){
+                    profileActivity.onProfileActivitySuccess()
+                } else {
+                    profileActivity.onProfileActivityError()
+                }
+            }
+        }
+
+        socket.on(Events.ON_RESPONSE_SCHEDULLE.value) { args ->
+            Log.d("schedulle", "schedulle")
+            try {
+                val response = JSONArray(args[0].toString())
+                Log.d(tag, "res: $response")
+                scheduleActivity?.runOnUiThread {
+                    this.scheduleActivity.updateSchedule(response)
+                }
+            } catch (e: Exception) {
+                Log.e(tag, "Error parsing response: ${e.message}")
+            }
         }
 
     }

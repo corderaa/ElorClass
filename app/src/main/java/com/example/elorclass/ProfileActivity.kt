@@ -66,6 +66,9 @@ class ProfileActivity : BaseActivity() {
                         message.put("newPassword", newPassword)
                         socketClient!!.connect()
                         socketClient?.emit("onPasswordChange", message.toString())
+                        etOldPassword.text.clear()
+                        etNewPassword.text.clear()
+                        etConfirmPassword.text.clear()
                     } else {
                         Toast.makeText(
                             this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
@@ -222,5 +225,25 @@ class ProfileActivity : BaseActivity() {
         Toast.makeText(
             this, getString(R.string.passwords_dont_match), Toast.LENGTH_SHORT
         ).show()
+    }
+    override fun onPause() {
+        super.onPause()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 }

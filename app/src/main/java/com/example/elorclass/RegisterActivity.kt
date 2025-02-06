@@ -321,8 +321,24 @@ class RegisterActivity : BaseActivity() {
     fun registerFail(){
         Toast.makeText(this, "Error en el registro", Toast.LENGTH_LONG).show()
     }
+    override fun onPause() {
+        super.onPause()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        socketClient?.disconnect()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 }

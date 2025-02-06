@@ -104,7 +104,6 @@ class ScheduleActivity : BaseActivity() {
 
     fun updateSchedule(schedules: JSONArray) {
         scheduleItems.clear()
-        // COJER SCHEDULES
         scheduleItems = takeSchedule(schedules)
         if (!scheduleItems.isEmpty()) {
             val scheduleAdapter =
@@ -118,6 +117,27 @@ class ScheduleActivity : BaseActivity() {
 
     fun schedulleFailed() {
         Toast.makeText(this, "Error al cargar", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (socketClient != null && socketClient!!.isConnected()) {
+            socketClient?.disconnect()
+        }
     }
 
 }
