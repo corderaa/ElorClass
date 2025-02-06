@@ -37,12 +37,8 @@ class ScheduleActivity : BaseActivity() {
         val returnButton: Button = findViewById(R.id.returnBtn)
         myList = findViewById<ListView>(R.id.listViewSchedule)
 
-
-        socketClient = SocketClient(null, null, this)
+        socketClient = SocketClient(null, null, null, this)
         socketClient!!.connect()
-
-
-
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
 
@@ -69,7 +65,6 @@ class ScheduleActivity : BaseActivity() {
 
     }
 
-
     fun takeSchedule(schedules: JSONArray): MutableList<ScheduleItem> {
         scheduleItems.clear()
         var ret: MutableList<ScheduleItem> = mutableListOf<ScheduleItem>();
@@ -85,8 +80,6 @@ class ScheduleActivity : BaseActivity() {
             var subject = schedule.get("subjects") as JSONObject
             var subjectName = subject.get("name")
 
-
-
             if (currentSelectedDate == formattedDate) {
                 ret.add(ScheduleItem(hour.toString(), subjectName.toString()))
             } else {
@@ -94,7 +87,6 @@ class ScheduleActivity : BaseActivity() {
             }
 
             //ret.add(ScheduleItem(hour.toString(), subjectName.toString()))
-
 
             Log.d("d", schedule.toString())
         }
@@ -104,7 +96,6 @@ class ScheduleActivity : BaseActivity() {
 
     fun updateSchedule(schedules: JSONArray) {
         scheduleItems.clear()
-        // COJER SCHEDULES
         scheduleItems = takeSchedule(schedules)
         if (!scheduleItems.isEmpty()) {
             val scheduleAdapter =
